@@ -2,17 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>External Keyboard Layout Customizer</title>
+    <title>Android External Keyboard Layout Customization</title>
 </head>
 <body>
-    <form id="form" action="/build" method="post"></form>
-    <div>
-        <p>
-            <textarea name="layout" cols="80" rows="20" required form="form">type OVERLAY</textarea>
-        </p>
-        <p>
-            <input type="submit" value="Build App" form="form">
-        </p>
-    </div>
+<h1>Android external keyboard customization</h1>
+<p>
+    Android external keyboard layout can be modified via <a target="_blank" href="https://source.android.com/devices/input/key-layout-files">Keyboard Layout</a> (.kl) or <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> (.kcm) files but it requires root access.
+    It's possible though to customize the layout without rooting. Since Android 4.1 an app can provide additional keyboard layouts (<a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> files). This project allows you to build such app.
+</p>
+
+<h2>Customizer</h2>
+<p>The form below contains <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file content that will be added to the app.</p>
+<ol>
+    <li>Customize your keyboard layout in the form below. Check out examples (above the form) or some instructions (below the form).</li>
+    <li>Click Build & Download.</li>
+    <li>Download the app and install it. The app is self-signed so Android will warn you about untrusted source or something like this. Note: if you install the app second time (the previous one is already installed) and get an error, try to uninstall it first.</li>
+    <li>Go to <code>Settings -> Language & input -> Physical keyboard</code>, choose the keyboard you want to customize, and select <code>Custom</code> layout.</li>
+</ol>
+
+<form id="form" action="/" method="post"></form>
+<div>
+    <span>Examples:</span>
+    <button onclick="setLayout('type OVERLAY')">Default</button>
+    <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT')">Caps-Lock as Left Ctrl</button>
+    <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT\nmap key 29 CAPS_LOCK')">Swap Caps-Lock and Left Ctrl</button>
+</div>
+<p>
+    <textarea id="layout" name="layout" rows="20" required form="form" autocomplete="off" style="width: 100%;">type OVERLAY</textarea>
+</p>
+<p>
+    <input type="submit" value="Build & Download" form="form">
+</p>
+
+<h2>How to customize keyboard layout</h2>
+<p>
+    Keyboard layout is customized via <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file.
+    To remap a physical key use <code>map key KEY_CODE ANDROID_KEY</code> syntax where <code>KEY_CODE</code> is a code that produced by physical key and <code>ANDROID_KEY</code> is an Android key such as <code>ENTER</code>, <code>BRIGHTNESS_UP</code> or just plain character like <code>1</code> or <code>A</code>.
+    All the default mappings for keys can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key KEY_CODE ANDROID_KEY</code>.
+</p>
+<p>
+    Some keyboards have media-keys or other keys that don't work as expected. To remap them you should find out what key codes do they produce.
+    There are several Android apps to do it. For example <a target="_blank" href="https://play.google.com/store/apps/details?id=ru.elron.gamepadtester">Gamepad tester</a> (note that it uses 'scan code' to refer to key code).
+</p>
+<p>
+    It's possible to define shortcuts (combinations with modifier keys like CTRL, ALT or SHIFT). Learn more in <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files#how-key-combinations-are-mapped-to-behaviors">documentation</a>.
+</p>
+
+<h2>Limitations</h2>
+<p>
+    Only one keyboard layout will be provided. It may be changed in the future.
+    If you need multiple custom keyboard layouts (for example for multiple languages support), take a look at <a target="_blank" href="https://github.com/ris58h/custom-keyboard-layout">Custom Keyboard Layout</a> project.
+</p>
+
+<hr>
+
+<p>
+    Contacts: <a href="mailto:ris58h@gmail.com">ris58h@gmail.com</a> <a target="_blank" href="https://github.com/ris58h">github.com/ris58h</a>
+</p>
+
+<script>
+function setLayout(layout) {
+  document.getElementById("layout").value = layout;
+}
+</script>
 </body>
 </html>

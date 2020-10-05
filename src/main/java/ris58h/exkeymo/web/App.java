@@ -10,8 +10,8 @@ import java.util.concurrent.Executors;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        int port = 80;
-        int threads = Runtime.getRuntime().availableProcessors();
+        int port = intSystemProperty("server.port", 80);
+        int threads = intSystemProperty("server.threads", Runtime.getRuntime().availableProcessors());
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(Executors.newFixedThreadPool(threads));
@@ -72,5 +72,10 @@ public class App {
             }
         }
         return null;
+    }
+
+    private static int intSystemProperty(String key, int defaultValue) {
+        String property = System.getProperty(key);
+        return property != null ? Integer.parseInt(property) : defaultValue;
     }
 }

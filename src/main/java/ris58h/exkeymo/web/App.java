@@ -1,6 +1,8 @@
 package ris58h.exkeymo.web;
 
 import com.sun.net.httpserver.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -9,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
 
 public class App {
+    private static final Logger log = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) throws Exception {
         int port = intSystemProperty("server.port", 80);
         int threads = intSystemProperty("server.threads", Runtime.getRuntime().availableProcessors());
@@ -38,9 +42,16 @@ public class App {
 
                 byte[] bytes;
                 try {
+                    log.info("Building app...");
+                    long start = System.currentTimeMillis();
                     bytes = appBuilder.buildApp(layout);
+                    if (log.isInfoEnabled()) {
+                        long mills = System.currentTimeMillis() - start;
+                        log.info(String.format("App is built in %.1f seconds", (((double) mills) / 1000)));
+                    }
                 } catch (Exception e) {
-                    bytes = ("Processing error: " + e.getMessage()).getBytes(StandardCharsets.UTF_8);
+                    log.error("Error while building app", e);
+                    bytes = e.getMessage().getBytes(StandardCharsets.UTF_8);
                     exchange.sendResponseHeaders(500, bytes.length);
                     OutputStream os = exchange.getResponseBody();
                     os.write(bytes);
@@ -61,6 +72,7 @@ public class App {
         });
 
         server.start();
+        log.info("Server started at port " + port);
     }
 
     private static String parseLayoutFromRequest(String request) {

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Android External Keyboard Layout Customization</title>
+    <meta name="description" content="How to remap Android physical/external keyboard without root">
+    <title>ExKeyMo</title>
     <style>
         code {
             margin: 0 2px;
@@ -19,17 +20,17 @@
     </script>
 </head>
 <body>
-<h1>Android external keyboard customization</h1>
+<h1>Android external keyboard layout customization</h1>
 <p>
-    Android external keyboard layout can be modified via <a target="_blank" href="https://source.android.com/devices/input/key-layout-files">Keyboard Layout</a> (.kl) or <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> (.kcm) files but it requires root access.
-    It's possible though to customize the layout without rooting. Since Android 4.1 an app can provide additional keyboard layouts (<a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> files). This project allows you to build such app.
+    If you want to remap some keys on external keyboard on Android it can be done via <a target="_blank" href="https://source.android.com/devices/input/key-layout-files">Keyboard Layout</a> (.kl) or <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> (.kcm) files, but it requires root access.
+    It's possible though to do it without rooting. Since Android 4.1 an app can provide additional keyboard layouts (<a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> files). This project helps to build such app.
 </p>
 
 <h2>Customizer</h2>
 <p>The form below contains <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file content that will be added to the app.</p>
 <ol>
     <li>Customize your keyboard layout in the form below. Check out examples (above the form) or some instructions (below the form).</li>
-    <li>Click Build & Download.</li>
+    <li>Click Download.</li>
     <li>Download the app and install it. The app is self-signed so Android will warn you about untrusted source or something like this. Note: if you install the app and get an error, try to uninstall the previous version first, if you have any.</li>
     <li>Go to <code>Settings -> Language & input -> Physical keyboard</code>, choose the keyboard you want to customize, and select <code>Custom</code> layout.</li>
 </ol>
@@ -45,12 +46,12 @@
     <textarea id="layout" name="layout" rows="20" required form="form" autocomplete="off" style="width: 100%;">type OVERLAY</textarea>
 </p>
 <p>
-    <input type="submit" value="Build & Download" form="form">
+    <input type="submit" value="Download" form="form">
 </p>
 
-<h2>How to customize keyboard layout</h2>
+<h2>How to customize the keyboard layout</h2>
 <p>
-    Keyboard layout is customized via <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file.
+    The keyboard layout is customized via <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file.
     To remap a physical key use <code>map key KEY_CODE ANDROID_KEY</code> syntax where <code>KEY_CODE</code> is the code that produced by the physical key and <code>ANDROID_KEY</code> is an Android key such as <code>ENTER</code>, <code>BRIGHTNESS_UP</code> or just a plain character like <code>1</code> or <code>A</code>.
     All the default mappings for keys can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key KEY_CODE ANDROID_KEY</code>.
 </p>

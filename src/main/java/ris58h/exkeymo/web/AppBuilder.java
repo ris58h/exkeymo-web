@@ -28,9 +28,10 @@ public class AppBuilder {
     }
 
     public byte[] buildApp(String layout) throws Exception {
-        ByteArrayOutputStream outAppBytes = new ByteArrayOutputStream(inAppBytes.length);
-        buildApp(layout, outAppBytes);
-        return outAppBytes.toByteArray();
+        try (ByteArrayOutputStream outAppBytes = new ByteArrayOutputStream(inAppBytes.length)) {
+            buildApp(layout, outAppBytes);
+            return outAppBytes.toByteArray();
+        }
     }
 
     private void buildApp(String layout, OutputStream outAppStream) throws Exception {

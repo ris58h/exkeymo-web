@@ -24,7 +24,9 @@ public class App {
         AppBuilder appBuilder = new AppBuilder();
         appBuilder.init();
         server.createContext("/", exchange -> {
-            if ("GET".equals(exchange.getRequestMethod())) {
+            String requestMethod = exchange.getRequestMethod();
+
+            if ("GET".equals(requestMethod)) {
                 exchange.getResponseHeaders().set("Content-Type", "text/html");
                 exchange.sendResponseHeaders(200, htmlBytes.length);
                 OutputStream os = exchange.getResponseBody();
@@ -33,7 +35,7 @@ public class App {
                 return;
             }
 
-            if ("POST".equals(exchange.getRequestMethod())) {
+            if ("POST".equals(requestMethod)) {
                 String layout = parseLayoutFromRequest(new String(exchange.getRequestBody().readAllBytes()));
                 if (layout == null) {
                     exchange.sendResponseHeaders(400, -1);
@@ -77,11 +79,7 @@ public class App {
 
     private static String parseLayoutFromRequest(String request) {
         if (request.startsWith("layout=")) {
-            try {
-                return URLDecoder.decode(request.substring("layout=".length()), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                return null;
-            }
+            return URLDecoder.decode(request.substring("layout=".length()), StandardCharsets.UTF_8);
         }
         return null;
     }

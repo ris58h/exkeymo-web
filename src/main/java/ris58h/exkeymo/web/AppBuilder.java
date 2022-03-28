@@ -1,6 +1,8 @@
 package ris58h.exkeymo.web;
 
 import ch.cern.test.mdm.utils.SignedJar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -12,6 +14,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class AppBuilder {
+    private static final Logger log = LoggerFactory.getLogger(AppBuilder.class);
+
     private byte[] inAppBytes;
     private X509Certificate certificate;
     private PrivateKey privateKey;
@@ -24,12 +28,21 @@ public class AppBuilder {
         char[] password = "exkeymo".toCharArray();
         keyStore.load(AppBuilder.class.getResourceAsStream("/exkeymo.keystore"), password);
         this.certificate = (X509Certificate) keyStore.getCertificate("app");
-        privateKey = (PrivateKey) keyStore.getKey("app", password);
+        this.privateKey = (PrivateKey) keyStore.getKey("app", password);
     }
 
     public byte[] buildApp(String layout) throws Exception {
         try (ByteArrayOutputStream outAppBytes = new ByteArrayOutputStream(inAppBytes.length)) {
+            log.info("Building app...");
+            long start = System.currentTimeMillis();
+
             buildApp(layout, outAppBytes);
+
+            if (log.isInfoEnabled()) {
+                long mills = System.currentTimeMillis() - start;
+                log.info(String.format("App is built in %.1f seconds", (((double) mills) / 1000)));
+            }
+
             return outAppBytes.toByteArray();
         }
     }

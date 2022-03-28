@@ -1,19 +1,33 @@
 package ris58h.exkeymo.web;
 
+import java.util.Optional;
+
 public class App {
     public static void main(String[] args) throws Exception {
-        int port = intSystemProperty("server.port", 80);
-        int threads = intSystemProperty("server.threads", Runtime.getRuntime().availableProcessors());
-
-        ApkBuilder appBuilder = new ApkBuilder();
+        ApkBuilder appBuilder = new ApkBuilder(
+                stringProperty("keystore.password")
+                        .orElseThrow(() -> new RuntimeException("Property 'keystore.password' is not specified"))
+        );
         appBuilder.init();
 
-        Server server = new Server(port, threads, appBuilder);
+        Server server = new Server(
+                integerProperty("server.port").orElse(80),
+                integerProperty("server.threads").orElse(Runtime.getRuntime().availableProcessors()),
+                appBuilder
+        );
         server.init();
     }
 
-    private static int intSystemProperty(String key, int defaultValue) {
-        String property = System.getProperty(key);
-        return property != null ? Integer.parseInt(property) : defaultValue;
+    private static Optional<Integer> integerProperty(String key) {
+        return stringProperty(key).map(Integer::valueOf);
+    }
+
+    private static Optional<String> stringProperty(String key) {
+        return Optional.ofNullable(System.getenv(envPropertyKey(key)))
+                .or(() -> Optional.ofNullable(System.getProperty(key)));
+    }
+
+    private static String envPropertyKey(String propertyKey) {
+        return propertyKey.toUpperCase().replace('.', '_');
     }
 }

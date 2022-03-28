@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -16,19 +17,26 @@ import java.util.zip.ZipInputStream;
 public class ApkBuilder {
     private static final Logger log = LoggerFactory.getLogger(ApkBuilder.class);
 
+    private final char[] keystorePassword;
+
     private byte[] inAppBytes;
     private X509Certificate certificate;
     private PrivateKey privateKey;
+
+    public ApkBuilder(String keystorePassword) {
+        this.keystorePassword = keystorePassword.toCharArray();
+    }
 
     public void init() throws Exception {
         InputStream unsignedAppStream = ApkBuilder.class.getResourceAsStream("/app-release-unsigned.apk");
         this.inAppBytes = unsignedAppStream.readAllBytes();
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
-        char[] password = "exkeymo".toCharArray();
-        keyStore.load(ApkBuilder.class.getResourceAsStream("/exkeymo.keystore"), password);
+        keyStore.load(ApkBuilder.class.getResourceAsStream("/exkeymo.keystore"), keystorePassword);
         this.certificate = (X509Certificate) keyStore.getCertificate("app");
-        this.privateKey = (PrivateKey) keyStore.getKey("app", password);
+        this.privateKey = (PrivateKey) keyStore.getKey("app", keystorePassword);
+
+        Arrays.fill(keystorePassword, (char) 0);
     }
 
     public byte[] buildApp(String layout) throws Exception {

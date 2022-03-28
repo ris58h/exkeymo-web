@@ -20,23 +20,21 @@
     </script>
 </head>
 <body>
-<h1>Android external keyboard layout customization without root</h1>
+<h1>ExKeyMo - Android external keyboard layout customization without root</h1>
 <p>
-    If you want to remap some keys on external keyboard on Android it can be done via <a target="_blank" href="https://source.android.com/devices/input/key-layout-files">Keyboard Layout</a> (.kl) or <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> (.kcm) files, but it requires root access.
-    It's possible though to do it without rooting. Since Android 4.1 an app can provide additional keyboard layouts (<a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> files). This project helps to build such app.
+    Since Android 4.1 an app can provide additional keyboard layouts (<a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> files) which allow us to customize the keyboard layout without root access. This project helps you to build such app even if you don't know anything about Android development.
 </p>
 
-<h2>Customizer</h2>
-<p>The form below contains <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file content that will be added to the app.</p>
+<h2>How to</h2>
 <ol>
-    <li>Customize your keyboard layout in the form below. Check out examples (above the form) or some instructions (below the form).</li>
-    <li>Click Download.</li>
+    <li>Customize KCM file in the form below. Check out <a href="#examples">examples</a> (above the form) and <a href="#instructions">instructions</a> (below the form).</li>
+    <li>Click Download. ExKeyMo will build the app for you.</li>
     <li>Download the app and install it. The app is self-signed so Android will warn you about untrusted source or something like this. Note: if you install the app and get an error, try to uninstall the previous version first, if you have any.</li>
-    <li>Go to <code>Settings -> Language & input -> Physical keyboard</code>, choose the keyboard you want to customize, and select <code>Custom</code> layout.</li>
+    <li>Go to <code>Settings -> Language & input -> Physical keyboard</code> (the exact path may vary), choose the keyboard you want to customize, and select <code>Custom</code> layout.</li>
 </ol>
 
 <form id="form" action="/" method="post"></form>
-<div>
+<div id="examples">
     <span>Examples:</span>
     <button onclick="setLayout('type OVERLAY')">Default</button>
     <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT')">Caps-Lock as Left Ctrl</button>
@@ -49,7 +47,7 @@
     <input type="submit" value="Download" form="form">
 </p>
 
-<h2>How to customize the keyboard layout</h2>
+<h2 id="instructions">Instructions</h2>
 <p>
     The keyboard layout is customized via <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file.
     To remap a physical key use <code>map key KEY_CODE ANDROID_KEY</code> syntax where <code>KEY_CODE</code> is the code that produced by the physical key and <code>ANDROID_KEY</code> is an Android key such as <code>ENTER</code>, <code>BRIGHTNESS_UP</code> or just a plain character like <code>1</code> or <code>A</code>.
@@ -65,8 +63,8 @@
 
 <h2>Limitations</h2>
 <p>
-    Only one keyboard layout will be provided. It may be changed in the future.
-    If you need multiple custom keyboard layouts (for example for multiple languages support), take a look at <a target="_blank" href="https://github.com/ris58h/custom-keyboard-layout">Custom Keyboard Layout</a> project.
+    Only single keyboard layout is supported. It may be changed in the future.
+    If you need multiple custom keyboard layouts (for example for multiple languages), take a look at <a target="_blank" href="https://github.com/ris58h/custom-keyboard-layout">Custom Keyboard Layout</a> project.
 </p>
 
 <hr>

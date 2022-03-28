@@ -5,7 +5,7 @@ public class App {
         int port = intSystemProperty("server.port", 80);
         int threads = intSystemProperty("server.threads", Runtime.getRuntime().availableProcessors());
 
-        AppBuilder appBuilder = new AppBuilder();
+        ApkBuilder appBuilder = new ApkBuilder();
         appBuilder.init();
 
         Server server = new Server(port, threads, appBuilder);

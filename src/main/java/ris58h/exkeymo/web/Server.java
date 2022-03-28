@@ -17,14 +17,14 @@ public class Server {
 
     private final int port;
     private final int threads;
-    private final AppBuilder appBuilder;
+    private final ApkBuilder apkBuilder;
 
     byte[] htmlBytes;
 
-    public Server(int port, int threads, AppBuilder appBuilder) {
+    public Server(int port, int threads, ApkBuilder appBuilder) {
         this.port = port;
         this.threads = threads;
-        this.appBuilder = appBuilder;
+        this.apkBuilder = appBuilder;
     }
 
     public void init() throws Exception {
@@ -69,7 +69,7 @@ public class Server {
 
         byte[] bytes;
         try {
-            bytes = appBuilder.buildApp(layout);
+            bytes = apkBuilder.buildApp(layout);
         } catch (Exception e) {
             log.error("Error while building app", e);
             bytes = e.getMessage().getBytes(StandardCharsets.UTF_8);

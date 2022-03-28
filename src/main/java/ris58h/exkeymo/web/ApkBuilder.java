@@ -13,20 +13,20 @@ import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class AppBuilder {
-    private static final Logger log = LoggerFactory.getLogger(AppBuilder.class);
+public class ApkBuilder {
+    private static final Logger log = LoggerFactory.getLogger(ApkBuilder.class);
 
     private byte[] inAppBytes;
     private X509Certificate certificate;
     private PrivateKey privateKey;
 
     public void init() throws Exception {
-        InputStream unsignedAppStream = AppBuilder.class.getResourceAsStream("/app-release-unsigned.apk");
+        InputStream unsignedAppStream = ApkBuilder.class.getResourceAsStream("/app-release-unsigned.apk");
         this.inAppBytes = unsignedAppStream.readAllBytes();
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
         char[] password = "exkeymo".toCharArray();
-        keyStore.load(AppBuilder.class.getResourceAsStream("/exkeymo.keystore"), password);
+        keyStore.load(ApkBuilder.class.getResourceAsStream("/exkeymo.keystore"), password);
         this.certificate = (X509Certificate) keyStore.getCertificate("app");
         this.privateKey = (PrivateKey) keyStore.getKey("app", password);
     }

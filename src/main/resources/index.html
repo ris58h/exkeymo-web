@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="How to remap Android physical/external keyboard without root">
-    <title>ExKeyMo</title>
+    <meta name="description" content="How to remap Android external keyboard without root">
+    <title>ExKeyMo - Android external keyboard remapping without root</title>
     <style>
         code {
             margin: 0 2px;
@@ -20,28 +20,29 @@
     </script>
 </head>
 <body>
-<h1>ExKeyMo - Android external keyboard layout customization without root</h1>
+<h1>Android external keyboard remapping without root</h1>
 <p>
-    Since Android 4.1 an app can provide additional keyboard layouts (<a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character 
-Map</a> files). This adds ability to customize the keyboard layout without root access. This project helps you to build such app even if you don't know anything about Android 
-development. </p>
+    Since Android 4.1 an app can provide additional keyboard layouts (<a target="_blank" href="https://source.android.com/docs/core/input/key-character-map-files">Key Character 
+Map files</a>). Since than it's possible to customize a keyboard layout without root access by installing an app that contains requred layout. ExKeyMo helps you to build such app even if you don't know anything about Android 
+development.
+</p>
 
 <h2>How to</h2>
 <ol>
-    <li>Customize KCM file in the form below. Check out <a href="#examples">examples</a> (above the form) and <a href="#instructions">instructions</a> (below the form).</li>
+    <li>Customize Key Character Map file content in the form below.
     <li>Click <code>Download</code>. ExKeyMo will build the app for you.</li>
     <li>Download the app and install it. The app is self-signed so Android will warn you about untrusted source or something like this. Note: if you install the app and get an error, try to uninstall the previous version first, if you have any.</li>
     <li>Go to <code>Settings -> Language & input -> Physical keyboard</code> (the exact path may vary), choose the keyboard you want to customize, and select <code>Custom</code> layout.</li>
 </ol>
 
 <form id="form" action="/" method="post"></form>
-<div id="examples">
+<div>
     <span>Examples:</span>
     <button onclick="setLayout('type OVERLAY')">Default</button>
-    <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT')">Caps-Lock as Left Ctrl</button>
-    <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT\nmap key 29 CAPS_LOCK')">Swap Caps-Lock and Left Ctrl</button>
-    <button onclick="setLayout('type OVERLAY\n\nmap key 58 ESCAPE')">Caps-Lock as Esc</button>
-    <button onclick="setLayout('type OVERLAY\n\nmap key 58 ESCAPE\nmap key 1 CAPS_LOCK')">Swap Caps-Lock and Esc</button>
+    <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT')">Caps Lock as Left Ctrl</button>
+    <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT\nmap key 29 CAPS_LOCK')">Swap Caps Lock and Left Ctrl</button>
+    <button onclick="setLayout('type OVERLAY\n\nmap key 58 ESCAPE')">Caps Lock as Esc</button>
+    <button onclick="setLayout('type OVERLAY\n\nmap key 58 ESCAPE\nmap key 1 CAPS_LOCK')">Swap Caps Lock and Esc</button>
 </div>
 <p>
     <textarea id="layout" name="layout" rows="20" required form="form" autocomplete="off" style="width: 100%;">type OVERLAY</textarea>
@@ -50,18 +51,31 @@ development. </p>
     <input type="submit" value="Download" form="form">
 </p>
 
-<h2 id="instructions">Instructions</h2>
+<h2>Customization</h2>
 <p>
-    The keyboard layout is customized via <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files">Key Character Map</a> file.
+    The keyboard layout is customized using <a target="_blank" href="https://source.android.com/docs/core/input/key-character-map-files">Key Character Map file</a> syntax.
     To remap a physical key use <code>map key KEY_CODE ANDROID_KEY</code> syntax where <code>KEY_CODE</code> is the code that produced by the physical key and <code>ANDROID_KEY</code> is an Android key such as <code>ENTER</code>, <code>BRIGHTNESS_UP</code> or just a plain character like <code>1</code> or <code>A</code>.
-    All the default mappings for keys can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key KEY_CODE ANDROID_KEY</code>.
+    The default keyboard layout can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key KEY_CODE ANDROID_KEY</code>.
+</p>
+<p>
+    For example you want to remap <code>Caps Lock</code> key to <code>Esc</code> key.
+    First of all don't forget to add the default English layout mappings using <code>type OVERLAY</code> as the very first line.
+    Then open <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> and find out what <code>KEY_CODE</code> (2-nd column) is produced by each key (3-rd column).
+    It's <code>1</code> for <code>ESCAPE</code> and <code>58</code> for <code>CAPS_LOCK</code> by default.
+    After that add corresponding mappings in format <code>map key KEY_CODE ANDROID_KEY</code>.
+    Final result will be:
+    <pre>
+        type OVERLAY
+
+        map key 58 ESCAPE
+    </pre>
 </p>
 <p>
     Some keyboards have media-keys or other keys that don't work as expected. To remap them you should find out what key codes they produce.
     There are several Android apps to do it. For example <a target="_blank" href="https://play.google.com/store/apps/details?id=ru.elron.gamepadtester">Gamepad tester</a> (note that it uses 'scan code' to refer to a key code).
 </p>
 <p>
-    It's possible to define shortcuts (combinations with modifier keys like CTRL, ALT or SHIFT). Learn more in <a target="_blank" href="https://source.android.com/devices/input/key-character-map-files#how-key-combinations-are-mapped-to-behaviors">documentation</a>.
+    More complex customization (combinations with modifier keys like <code>Ctrl</code>/<code>Alt</code>/<code>Shift</code> or producing non-English characters) is also possible. Learn more in <a target="_blank" href="https://source.android.com/docs/core/input/key-character-map-files#how-key-combinations-are-mapped-to-behaviors">official documentation</a>.
 </p>
 
 <h2>Limitations</h2>
@@ -73,9 +87,9 @@ development. </p>
 <hr>
 
 <p>
-    Source code: <a target="_blank" href="https://github.com/ris58h/exkeymo-web">exkeymo-web</a>
+    Source code: <a target="_blank" href="https://github.com/ris58h/exkeymo-web">GitHub</a>
     <br/>
-    Contacts: <a href="mailto:ris58h+exkeymo@gmail.com">ris58h+exkeymo@gmail.com</a>
+    Contacts: <a href="mailto:ris58h@gmail.com">Email</a>
 </p>
 </body>
 </html>

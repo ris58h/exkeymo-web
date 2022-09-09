@@ -5,6 +5,7 @@
     <meta name="description" content="How to remap Android external keyboard without root">
     <title>ExKeyMo - Android external keyboard remapping without root</title>
     <style>
+        /* Style it because <code> looks ugly in Ghrome */
         code {
             margin: 0 2px;
             padding: 0px 5px;
@@ -58,10 +59,10 @@ development.
     The default keyboard layout can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key KEY_CODE ANDROID_KEY</code>.
 </p>
 <p>
-    For example you want to swap <code>Caps Lock</code> key and <code>Esc</code> key. To do this you need to map <code>Caps Lock</code> key to <code>Esc</code> key and vice versa.
-    Open <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> and find out what <code>KEY_CODE</code> (2-nd column) is produced by each key (3-rd column).
+    For example you want to swap <kbd>Caps Lock</kbd> key and <kbd>Esc</kbd> key. To do this you need to map <kbd>Caps Lock</kbd> key to <kbd>Esc</kbd> key and vice versa.
+    Open <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> and find out what <code>KEY_CODE</code> (2-nd column) is produced by each <code>ANDROID_KEY</code> (3-rd column).
     It's <code>1</code> for <code>ESCAPE</code> and <code>58</code> for <code>CAPS_LOCK</code> by default.
-    After that add corresponding mappings in format <code>map key KEY_CODE ANDROID_KEY</code>.
+    Add corresponding mappings in format <code>map key KEY_CODE ANDROID_KEY</code>.
     And don't forget to add the default English layout mappings using <code>type OVERLAY</code> as the very first line.
     Final result will be:
     <pre>
@@ -76,7 +77,7 @@ development.
     There are several Android apps to do it. For example <a target="_blank" href="https://play.google.com/store/apps/details?id=ru.elron.gamepadtester">Gamepad tester</a> (note that it uses 'scan code' to refer to a key code).
 </p>
 <p>
-    More complex customization (combinations with modifier keys like <code>Ctrl</code>/<code>Alt</code>/<code>Shift</code> or producing non-English characters) is also possible. Learn more in <a target="_blank" href="https://source.android.com/docs/core/input/key-character-map-files#how-key-combinations-are-mapped-to-behaviors">official documentation</a>.
+    More complex customization (combinations with modifier keys like <kbd>Ctrl</kbd>/<kbd>Alt</kbd>/<kbd>Shift</kbd> or producing non-English characters) is also possible. Learn more in <a target="_blank" href="https://source.android.com/docs/core/input/key-character-map-files#how-key-combinations-are-mapped-to-behaviors">official documentation</a>.
 </p>
 
 <h2>Limitations</h2>

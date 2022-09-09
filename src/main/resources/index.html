@@ -58,16 +58,17 @@ development.
     The default keyboard layout can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key KEY_CODE ANDROID_KEY</code>.
 </p>
 <p>
-    For example you want to remap <code>Caps Lock</code> key to <code>Esc</code> key.
-    First of all don't forget to add the default English layout mappings using <code>type OVERLAY</code> as the very first line.
-    Then open <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> and find out what <code>KEY_CODE</code> (2-nd column) is produced by each key (3-rd column).
+    For example you want to swap <code>Caps Lock</code> key and <code>Esc</code> key. To do this you need to map <code>Caps Lock</code> key to <code>Esc</code> key and vice versa.
+    Open <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> and find out what <code>KEY_CODE</code> (2-nd column) is produced by each key (3-rd column).
     It's <code>1</code> for <code>ESCAPE</code> and <code>58</code> for <code>CAPS_LOCK</code> by default.
     After that add corresponding mappings in format <code>map key KEY_CODE ANDROID_KEY</code>.
+    And don't forget to add the default English layout mappings using <code>type OVERLAY</code> as the very first line.
     Final result will be:
     <pre>
         type OVERLAY
 
         map key 58 ESCAPE
+        map key 1 CAPS_LOCK
     </pre>
 </p>
 <p>

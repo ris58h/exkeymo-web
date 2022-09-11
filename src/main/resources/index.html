@@ -63,7 +63,7 @@ development.
     Open <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> and find out what <code>KEY_CODE</code> (2-nd column) is produced by each <code>ANDROID_KEY</code> (3-rd column).
     It's <code>1</code> for <code>ESCAPE</code> and <code>58</code> for <code>CAPS_LOCK</code> by default.
     Add corresponding mappings in format <code>map key KEY_CODE ANDROID_KEY</code>.
-    And don't forget to add the default English layout mappings using <code>type OVERLAY</code> as the very first line.
+    And don't forget to add <code>type OVERLAY</code> as the very first line.
     Final result will be:
     <pre>
         type OVERLAY

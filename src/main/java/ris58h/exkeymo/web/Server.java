@@ -28,7 +28,7 @@ public class Server {
     }
 
     public void init() throws Exception {
-        this.htmlBytes = App.class.getResourceAsStream("/index.html").readAllBytes();
+        this.htmlBytes = Server.class.getResourceAsStream("/index.html").readAllBytes();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(Executors.newFixedThreadPool(threads));

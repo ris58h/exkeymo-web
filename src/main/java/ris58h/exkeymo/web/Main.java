@@ -2,7 +2,7 @@ package ris58h.exkeymo.web;
 
 import java.util.Optional;
 
-public class App {
+public class Main {
     public static void main(String[] args) throws Exception {
         ApkBuilder appBuilder = new ApkBuilder(
                 stringProperty("keystore.password")

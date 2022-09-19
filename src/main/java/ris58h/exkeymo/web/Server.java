@@ -69,7 +69,7 @@ public class Server {
 
         byte[] bytes;
         try {
-            bytes = apkBuilder.buildApp(layout);
+            bytes = apkBuilder.buildApp(layout, null);
         } catch (Exception e) {
             log.error("Error while building app", e);
             bytes = e.getMessage().getBytes(StandardCharsets.UTF_8);
@@ -81,7 +81,7 @@ public class Server {
         }
 
         exchange.getResponseHeaders().set("Content-Type", "application/vnd.android.package-archive");
-        exchange.getResponseHeaders().set("Content-Disposition", "attachment; filename=\"Custom Keyboard Layout.apk\"");
+        exchange.getResponseHeaders().set("Content-Disposition", "attachment; filename=\"ExKeyMo Keyboard Layout.apk\"");
         exchange.sendResponseHeaders(200, bytes.length);
         OutputStream os = exchange.getResponseBody();
         os.write(bytes);

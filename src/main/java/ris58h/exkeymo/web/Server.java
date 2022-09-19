@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class Server {
@@ -61,7 +63,10 @@ public class Server {
     }
 
     private void doPost(HttpExchange exchange) throws IOException {
-        String layout = parseLayoutFromRequest(new String(exchange.getRequestBody().readAllBytes()));
+        Map<String, String> params = parseParams(new String(exchange.getRequestBody().readAllBytes()));
+
+        String layout = params.get("layout");
+        String layout2 = params.get("layout2");
         if (layout == null) {
             exchange.sendResponseHeaders(400, -1);
             return;
@@ -69,7 +74,7 @@ public class Server {
 
         byte[] bytes;
         try {
-            bytes = apkBuilder.buildApp(layout, null);
+            bytes = apkBuilder.buildApp(layout, layout2);
         } catch (Exception e) {
             log.error("Error while building app", e);
             bytes = e.getMessage().getBytes(StandardCharsets.UTF_8);
@@ -88,10 +93,18 @@ public class Server {
         os.close();
     }
 
-    private static String parseLayoutFromRequest(String request) {
-        if (request.startsWith("layout=")) {
-            return URLDecoder.decode(request.substring("layout=".length()), StandardCharsets.UTF_8);
+    private static Map<String, String> parseParams(String request) {
+        String[] keyValues = request.split("&");
+        Map<String, String> params = new HashMap<>();
+        for (String keyValue : keyValues) {
+            int i = keyValue.indexOf('=');
+            if (i == -1) {
+                continue;
+            }
+            String key = URLDecoder.decode(keyValue.substring(0, i), StandardCharsets.UTF_8);
+            String value = URLDecoder.decode(keyValue.substring(i + 1), StandardCharsets.UTF_8);
+            params.put(key, value);
         }
-        return null;
+        return params;
     }
 }

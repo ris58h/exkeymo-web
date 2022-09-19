@@ -6,7 +6,7 @@
     <title>ExKeyMo - Android external keyboard remapping without root</title>
     <style>
         /* Style it because <code> looks ugly in Ghrome */
-        code, kbd {
+        code, kbd, pre {
             margin: 0 2px;
             padding: 0px 5px;
             border: 1px solid #ddd;
@@ -16,7 +16,13 @@
     </style>
     <script>
         function setLayout(layout) {
-          document.getElementById("layout").value = layout;
+            document.getElementById("layout").value = layout;
+        }
+
+        function showSecondLayout(show) {
+            const layout2 = document.getElementById("layout2");
+            layout2.disabled = !show;
+            layout2.hidden = !show;
         }
     </script>
 </head>
@@ -36,21 +42,21 @@ development.
     <li>Go to <kbd>Settings -> Language & input -> Physical keyboard</kbd> (the exact path may vary), choose the keyboard you want to customize, and select <kbd>ExKeyMo</kbd> layout.</li>
 </ol>
 
-<form id="form" action="/" method="post"></form>
-<div>
+<p>
     <span>Examples:</span>
     <button onclick="setLayout('type OVERLAY')">Default</button>
     <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT')">Caps Lock as Left Ctrl</button>
     <button onclick="setLayout('type OVERLAY\n\nmap key 58 CTRL_LEFT\nmap key 29 CAPS_LOCK')">Swap Caps Lock and Left Ctrl</button>
     <button onclick="setLayout('type OVERLAY\n\nmap key 58 ESCAPE')">Caps Lock as Esc</button>
     <button onclick="setLayout('type OVERLAY\n\nmap key 58 ESCAPE\nmap key 1 CAPS_LOCK')">Swap Caps Lock and Esc</button>
-</div>
-<p>
-    <textarea id="layout" name="layout" rows="20" required form="form" autocomplete="off" style="width: 100%;">type OVERLAY</textarea>
 </p>
-<p>
-    <input type="submit" value="Download" form="form">
-</p>
+
+<form id="form" action="/" method="post"></form>
+<textarea id="layout" name="layout" rows="20" required form="form" autocomplete="off" style="width: 100%;">type OVERLAY</textarea>
+<input type="checkbox" id="add-second-layout" onchange="showSecondLayout(this.checked)"/>
+<label for="add-second-layout">Add Second Layout</label><br/>
+<textarea id="layout2" name="layout2" rows="20" required disabled form="form" autocomplete="off" style="width: 100%;">type OVERLAY</textarea>
+<input type="submit" value="Download" form="form">
 
 <h2>Layout customization</h2>
 <p>
@@ -64,7 +70,7 @@ development.
     It's <code>1</code> for <code>ESCAPE</code> and <code>58</code> for <code>CAPS_LOCK</code> by default.
     Add corresponding mappings in format <code>map key KEY_CODE ANDROID_KEY</code>.
     And don't forget to add <code>type OVERLAY</code> as the very first line.
-    Final result will be:
+    The final result will be:
 </p>
 <pre>
 type OVERLAY
@@ -80,9 +86,33 @@ map key 1 CAPS_LOCK
     More complex customization (combinations with modifier keys like <kbd>Ctrl</kbd>/<kbd>Alt</kbd>/<kbd>Shift</kbd> or producing non-English characters) is also possible. Learn more in <a target="_blank" href="https://source.android.com/docs/core/input/key-character-map-files#how-key-combinations-are-mapped-to-behaviors">official documentation</a>.
 </p>
 
+<h2>Second Layout</h2>
+<p>
+    A second layout is useful if you use multiple languages.
+    Select <kbd>Add Second Layout</kbd> checkbox to add the second layout.
+    Specify it in the form below the checkbox.
+</p>
+<p>
+    For example you still want to swap <kbd>Caps Lock</kbd> key and <kbd>Esc</kbd> key, but you need to do it for a language other than English.
+    Find the default KCM-file for your language <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/packages/InputDevices/res/raw">here</a>.
+    Copy the content of that file to the second language field.
+    Add corresponding mappings. The final result will be:
+</p>
+<pre>
+# Multiple lines
+# with content
+# of
+# KCM-file
+# you copied
+# from https://android.googlesource.com/platform/frameworks/base/+/master/packages/InputDevices/res/raw
+
+map key 58 ESCAPE
+map key 1 CAPS_LOCK
+</pre>
+
 <h2>Limitations</h2>
 <p>
-    Only single keyboard layout is supported. It may be changed in the future.
+    Only two keyboard layouts are supported. It may be changed in the future.
     If you need multiple custom keyboard layouts (for example for multiple languages), take a look at <a target="_blank" href="https://github.com/ris58h/custom-keyboard-layout">Custom Keyboard Layout</a> project.
 </p>
 
@@ -93,5 +123,9 @@ map key 1 CAPS_LOCK
     <br/>
     Contacts: <a href="mailto:ris58h@gmail.com">Email</a>
 </p>
+
+<script>
+    showSecondLayout(document.getElementById("add-second-layout").checked);
+</script>
 </body>
 </html>

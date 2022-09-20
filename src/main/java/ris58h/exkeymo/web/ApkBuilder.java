@@ -18,13 +18,13 @@ public class ApkBuilder {
     private static final Logger log = LoggerFactory.getLogger(ApkBuilder.class);
 
     private static final String KEYBOARD_LAYOUTS_FILE_NAME = "res/Jb.xml";
-    private static final String KEYBOARD_LAYOUT_1_FILE_NAME = "res/Q2.kcm";
+    private static final String KEYBOARD_LAYOUT_FILE_NAME = "res/Q2.kcm";
     private static final String KEYBOARD_LAYOUT_2_FILE_NAME = "res/_f.kcm";
 
     private final char[] keystorePassword;
 
     private byte[] inAppBytes;
-    private byte[] keyboardLayouts1Bytes;
+    private byte[] keyboardLayoutsBytes;
     private byte[] keyboardLayouts2Bytes;
     private X509Certificate certificate;
     private PrivateKey privateKey;
@@ -35,7 +35,7 @@ public class ApkBuilder {
 
     public void init() throws Exception {
         this.inAppBytes = ApkBuilder.class.getResourceAsStream("/app-release-unsigned.apk").readAllBytes();
-        this.keyboardLayouts1Bytes = ApkBuilder.class.getResourceAsStream("/keyboard_layouts_1.xml").readAllBytes();
+        this.keyboardLayoutsBytes = ApkBuilder.class.getResourceAsStream("/keyboard_layouts.xml").readAllBytes();
         this.keyboardLayouts2Bytes = ApkBuilder.class.getResourceAsStream("/keyboard_layouts_2.xml").readAllBytes();
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
@@ -77,8 +77,8 @@ public class ApkBuilder {
             }
             String name = zipEntry.getName();
             final byte[] bytes = switch (name) {
-                case KEYBOARD_LAYOUTS_FILE_NAME -> layout2 == null ? keyboardLayouts1Bytes : keyboardLayouts2Bytes;
-                case KEYBOARD_LAYOUT_1_FILE_NAME -> layout.getBytes(StandardCharsets.UTF_8);
+                case KEYBOARD_LAYOUTS_FILE_NAME -> layout2 == null ? keyboardLayoutsBytes : keyboardLayouts2Bytes;
+                case KEYBOARD_LAYOUT_FILE_NAME -> layout.getBytes(StandardCharsets.UTF_8);
                 case KEYBOARD_LAYOUT_2_FILE_NAME -> layout2 == null ? null : layout2.getBytes(StandardCharsets.UTF_8);
                 default -> zipStream.readAllBytes();
             };

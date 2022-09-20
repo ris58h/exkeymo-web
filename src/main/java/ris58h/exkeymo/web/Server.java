@@ -30,7 +30,7 @@ public class Server {
     }
 
     public void init() throws Exception {
-        this.htmlBytes = Server.class.getResourceAsStream("/index.html").readAllBytes();
+        this.htmlBytes = Utils.readAllBytes(Server.class, "/index.html");
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(Executors.newFixedThreadPool(threads));

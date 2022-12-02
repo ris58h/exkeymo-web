@@ -86,8 +86,15 @@ public class Server {
             StringBuilder sb = new StringBuilder("type OVERLAY\n");
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 String key = entry.getKey();
-                String value = entry.getValue();
-                sb.append("map key ").append(key).append(' ').append(value).append('\n');
+                if (!key.startsWith("from")) {
+                    continue;
+                }
+                String to = params.get("to" + key.substring(4));
+                if (to == null) {
+                    continue;
+                }
+                String from = entry.getValue();
+                sb.append("map key ").append(from).append(' ').append(to).append('\n');
             }
             //TODO: multiple layouts
             return List.of(sb.toString());

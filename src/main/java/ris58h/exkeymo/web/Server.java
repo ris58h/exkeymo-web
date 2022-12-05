@@ -118,12 +118,7 @@ public class Server {
         if (name.isEmpty()) {
             return null;
         }
-        byte[] bytes = null;
-        try {
-            bytes = Resources.readAllBytes(Server.class, "/kcm/" + name);
-        } catch (IOException ex) {
-            log.warn("Couldn't find KCM-file " + name);
-        }
+        byte[] bytes = Resources.readAllBytesSafe("/kcm/" + name);
         return bytes == null ? null : new String(bytes, StandardCharsets.UTF_8);
     }
 
@@ -154,7 +149,7 @@ public class Server {
     }
 
     private static void doGet(HttpExchange exchange, String resourcePath, String contentType) throws IOException {
-        byte[] htmlBytes = Resources.readAllBytes(Server.class, "/public" + resourcePath);
+        byte[] htmlBytes = Resources.readAllBytesSafe("/public" + resourcePath);
 
         if (htmlBytes == null) {
             exchange.sendResponseHeaders(404, -1);

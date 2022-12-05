@@ -32,8 +32,8 @@ public class ApkBuilder {
     }
 
     public void init() throws Exception {
-        this.inAppBytes = Resources.readAllBytes(ApkBuilder.class, "/app-oneLayout-release-unsigned.apk");
-        this.inApp2Bytes = Resources.readAllBytes(ApkBuilder.class, "/app-twoLayouts-release-unsigned.apk");
+        this.inAppBytes = Resources.readAllBytes("/app-oneLayout-release-unsigned.apk");
+        this.inApp2Bytes = Resources.readAllBytes("/app-twoLayouts-release-unsigned.apk");
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
         keyStore.load(ApkBuilder.class.getResourceAsStream("/exkeymo.keystore"), keystorePassword);

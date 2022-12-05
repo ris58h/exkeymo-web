@@ -33,9 +33,60 @@
     </p>
 
     <form id="form" action="/simple" method="post">
+        <label>From/to:</label>
+        <button id="add" type="button">Add key map</button>
+        <label>Base layout:</label>
+        <select name="layout">
+            <option value="" selected>Default</option>
+            <option value="keyboard_layout_arabic.kcm">Arabic</option>
+            <option value="keyboard_layout_azerbaijani.kcm">Azerbaijan</option>
+            <option value="keyboard_layout_belarusian.kcm">Belarusian</option>
+            <option value="keyboard_layout_belgian.kcm">Belgian</option>
+            <option value="keyboard_layout_brazilian.kcm">Brazilian</option>
+            <option value="keyboard_layout_bulgarian.kcm">Bulgarian</option>
+            <option value="keyboard_layout_bulgarian_phonetic.kcm">Bulgarian (phonetic)</option>
+            <option value="keyboard_layout_croatian_and_slovenian.kcm">Croatian and Slovenian</option>
+            <option value="keyboard_layout_czech.kcm">Czech (EU - qwertz)</option>
+            <option value="keyboard_layout_czech_qwerty.kcm">Czech (EU - qwerty)</option>
+            <option value="keyboard_layout_danish.kcm">Danish</option>
+            <option value="keyboard_layout_english_uk.kcm">English (UK)</option>
+            <option value="keyboard_layout_english_us.kcm">English (US)</option>
+            <option value="keyboard_layout_english_us_colemak.kcm">English (US), Colemak</option>
+            <option value="keyboard_layout_english_us_dvorak.kcm">English (US), Dvorak</option>
+            <option value="keyboard_layout_english_us_intl.kcm">English (US), International</option>
+            <option value="keyboard_layout_english_us_workman.kcm">English (US), Workman</option>
+            <option value="keyboard_layout_estonian.kcm">Estonian</option>
+            <option value="keyboard_layout_finnish.kcm">Finnish</option>
+            <option value="keyboard_layout_french.kcm">French</option>
+            <option value="keyboard_layout_french_ca.kcm">French (Canada)</option>
+            <option value="keyboard_layout_georgian.kcm">Georgian</option>
+            <option value="keyboard_layout_german.kcm">German</option>
+            <option value="keyboard_layout_greek.kcm">Greek</option>
+            <option value="keyboard_layout_hebrew.kcm">Hebrew</option>
+            <option value="keyboard_layout_hungarian.kcm">Hungarian</option>
+            <option value="keyboard_layout_icelandic.kcm">Icelandic</option>
+            <option value="keyboard_layout_italian.kcm">Italian</option>
+            <option value="keyboard_layout_latvian_qwerty.kcm">Latvian</option>
+            <option value="keyboard_layout_lithuanian.kcm">Lithuanian</option>
+            <option value="keyboard_layout_mongolian.kcm">Mongolian</option>
+            <option value="keyboard_layout_norwegian.kcm">Norwegian</option>
+            <option value="keyboard_layout_persian.kcm">Persian</option>
+            <option value="keyboard_layout_polish.kcm">Polish</option>
+            <option value="keyboard_layout_portuguese.kcm">Portuguese</option>
+            <option value="keyboard_layout_russian.kcm">Russian</option>
+            <option value="keyboard_layout_russian_mac.kcm">Russian, Mac</option>
+            <option value="keyboard_layout_slovak.kcm">Slovak</option>
+            <option value="keyboard_layout_spanish.kcm">Spanish</option>
+            <option value="keyboard_layout_spanish_latin.kcm">Spanish (Latin)</option>
+            <option value="keyboard_layout_swedish.kcm">Swedish</option>
+            <option value="keyboard_layout_swiss_french.kcm">Swiss French</option>
+            <option value="keyboard_layout_swiss_german.kcm">Swiss German</option>
+            <option value="keyboard_layout_turkish.kcm">Turkish</option>
+            <option value="keyboard_layout_turkish_f.kcm">Turkish F</option>
+            <option value="keyboard_layout_ukrainian.kcm">Ukrainian</option>
+        </select>
+        <input type="submit" value="Download">
     </form>
-    <button id="add">Add key map</button>
-    <input type="submit" value="Download" form="form">
 
     <template id="linux-keycodes">
         <option value="1">ESCAPE</option>
@@ -847,13 +898,14 @@
             mapping.appendChild(to);
 
             const removeButton = document.createElement("button");
+            removeButton.type = "button";
             removeButton.textContent = "Remove";
             removeButton.addEventListener("click", () => {
                 mapping.remove();
             });
             mapping.appendChild(removeButton);
 
-            form.insertBefore(mapping, form.lastChild);
+            addButton.parentNode.insertBefore(mapping, addButton);
         }
     </script>
 </div>

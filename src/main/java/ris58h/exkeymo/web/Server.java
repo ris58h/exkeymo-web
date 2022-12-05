@@ -82,20 +82,28 @@ public class Server {
 
     private void doSimplePost(HttpExchange exchange) throws IOException {
         doPost(exchange, params -> {
+            String layout = null;
             Map<String, String> map = new HashMap<>();
             for (Map.Entry<String, String> e : params.entrySet()) {
-                if (!e.getKey().startsWith("from")) {
-                    continue;
+                String key = e.getKey();
+                String value = e.getValue();
+                if (key.startsWith("from")) {
+                    String keyCode = params.get("to" + key.substring(4));
+                    if (keyCode == null) {
+                        continue;
+                    }
+                    map.put(value, keyCode);
+                } else if (key.equals("layout")) {
+                    layout = readLayout(value);
                 }
-                String keyCode = params.get("to" + e.getKey().substring(4));
-                if (keyCode == null) {
-                    continue;
-                }
-                String code = e.getValue();
-                map.put(code, keyCode);
             }
-            //TODO: specify base KCM file
-            StringBuilder sb = new StringBuilder("type OVERLAY\n");
+            if (layout == null) {
+                layout = "type OVERLAY\n\n";
+            } else {
+                //TODO: check for duplicate mappings (some keys could be already remapped in KCM-file)
+            }
+            StringBuilder sb = new StringBuilder(layout);
+            sb.append("# Modifications made by ExKeyMo project:\n");
             for (Map.Entry<String, String> e : map.entrySet()) {
                 String code = e.getKey();
                 String keyCode = e.getValue();
@@ -104,6 +112,19 @@ public class Server {
             //TODO: multiple layouts
             return List.of(sb.toString());
         });
+    }
+
+    private static String readLayout(String name) {
+        if (name.isEmpty()) {
+            return null;
+        }
+        byte[] bytes = null;
+        try {
+            bytes = Resources.readAllBytes(Server.class, "/kcm/" + name);
+        } catch (IOException ex) {
+            log.warn("Couldn't find KCM-file " + name);
+        }
+        return bytes == null ? null : new String(bytes, StandardCharsets.UTF_8);
     }
 
     private void doComplexGet(HttpExchange exchange) throws IOException {

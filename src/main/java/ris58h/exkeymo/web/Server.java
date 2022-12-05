@@ -82,19 +82,24 @@ public class Server {
 
     private void doSimplePost(HttpExchange exchange) throws IOException {
         doPost(exchange, params -> {
+            Map<String, String> map = new HashMap<>();
+            for (Map.Entry<String, String> e : params.entrySet()) {
+                if (!e.getKey().startsWith("from")) {
+                    continue;
+                }
+                String keyCode = params.get("to" + e.getKey().substring(4));
+                if (keyCode == null) {
+                    continue;
+                }
+                String code = e.getValue();
+                map.put(code, keyCode);
+            }
             //TODO: specify base KCM file
             StringBuilder sb = new StringBuilder("type OVERLAY\n");
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                String key = entry.getKey();
-                if (!key.startsWith("from")) {
-                    continue;
-                }
-                String to = params.get("to" + key.substring(4));
-                if (to == null) {
-                    continue;
-                }
-                String from = entry.getValue();
-                sb.append("map key ").append(from).append(' ').append(to).append('\n');
+            for (Map.Entry<String, String> e : map.entrySet()) {
+                String code = e.getKey();
+                String keyCode = e.getValue();
+                sb.append("map key ").append(code).append(' ').append(keyCode).append('\n');
             }
             //TODO: multiple layouts
             return List.of(sb.toString());

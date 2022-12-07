@@ -927,11 +927,11 @@
         function addMapping() {
             mappingId++;
 
-            const from = document.createElement("select");
+            const from = createSelect();
             from.name = `from${mappingId}`;
             from.appendChild(linuxKeyCodesTemplate.content.cloneNode(true));
 
-            const to = document.createElement("select");
+            const to = createSelect();
             to.name = `to${mappingId}`;
             to.appendChild(androidKeysTemplate.content.cloneNode(true));
 
@@ -947,6 +947,18 @@
                 to,
                 removeButton
             ]));
+
+            function createSelect() {
+                const option = document.createElement("option");
+                option.value = "";
+                option.selected = true;
+
+                const select = document.createElement("select");
+                select.required = true;
+                select.appendChild(option);
+
+                return select;
+            }
 
             function createTableRow(elements) {
                 const row = document.createElement("tr");

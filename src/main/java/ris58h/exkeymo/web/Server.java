@@ -88,8 +88,11 @@ public class Server {
                 String key = e.getKey();
                 String value = e.getValue();
                 if (key.startsWith("from")) {
+                    if (value.isEmpty()) {
+                        continue;
+                    }
                     String keyCode = params.get("to" + key.substring(4));
-                    if (keyCode == null) {
+                    if (keyCode == null || keyCode.isEmpty()) {
                         continue;
                     }
                     map.put(value, keyCode);

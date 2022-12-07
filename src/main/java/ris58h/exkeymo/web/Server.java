@@ -93,7 +93,7 @@ public class Server {
                         continue;
                     }
                     map.put(value, keyCode);
-                } else if (key.equals("layout")) {
+                } else if (key.equals("layout") && !value.isEmpty()) {
                     layout = readLayout(value);
                 }
             }
@@ -115,9 +115,6 @@ public class Server {
     }
 
     private static String readLayout(String name) {
-        if (name.isEmpty()) {
-            return null;
-        }
         byte[] bytes = Resources.readAllBytesSafe("/kcm/" + name);
         return bytes == null ? null : new String(bytes, StandardCharsets.UTF_8);
     }

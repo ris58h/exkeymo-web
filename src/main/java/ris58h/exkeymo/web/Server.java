@@ -98,12 +98,12 @@ public class Server {
                 }
             }
             if (layout == null) {
-                layout = "type OVERLAY\n\n";
+                layout = "type OVERLAY\n";
             } else {
                 //TODO: check for duplicate mappings (some keys could be already remapped in KCM-file)
             }
             StringBuilder sb = new StringBuilder(layout);
-            sb.append("# Modifications made by ExKeyMo project:\n");
+            sb.append("\n# Modifications made by ExKeyMo project:\n");
             for (Map.Entry<String, String> e : map.entrySet()) {
                 String code = e.getKey();
                 String keyCode = e.getValue();

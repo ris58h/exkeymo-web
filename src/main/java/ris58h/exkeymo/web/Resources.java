@@ -20,4 +20,8 @@ public class Resources {
             return is == null ? null : is.readAllBytes();
         }
     }
+
+    public static InputStream getAsStream(String path) {
+        return Resources.class.getResourceAsStream(path);
+    }
 }

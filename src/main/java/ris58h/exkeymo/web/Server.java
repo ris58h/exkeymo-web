@@ -97,11 +97,17 @@ public class Server {
                     layout = readLayout(value);
                 }
             }
+
             if (layout == null) {
                 layout = "type OVERLAY\n";
             } else {
                 //TODO: check for duplicate mappings (some keys could be already remapped in KCM-file)
             }
+
+            if (map.isEmpty()) {
+                return List.of(layout);
+            }
+
             StringBuilder sb = new StringBuilder(layout);
             sb.append("\n# Modifications made by ExKeyMo project:\n");
             for (Map.Entry<String, String> e : map.entrySet()) {

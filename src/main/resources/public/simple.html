@@ -32,9 +32,23 @@
         For an advanced remapping take a look at <a href="/complex">complex</a> customization.
     </p>
 
-    <form id="form" action="/simple" method="post">
-        <label>From/to:</label>
-        <button id="add" type="button" style="display: block;">Add key map</button>
+    <form action="/simple" method="post">
+        <table border="0" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th><label>From key</label></th>
+                    <th><label>To key</label></th>
+                </tr>
+                </thead>
+            <tbody id="tbody"></tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <button id="add" type="button">Add key map</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
         <p>
             <label>Base layout:</label>
             <select name="layout" style="display: block;">
@@ -879,7 +893,7 @@
         const addButton = document.querySelector("#add");
         const linuxKeyCodesTemplate = document.querySelector("#linux-keycodes");
         const androidKeysTemplate = document.querySelector("#android-keys");
-        const form = document.querySelector("#form");
+        const tbody = document.querySelector("#tbody");
 
         addMapping();
         addButton.addEventListener("click", addMapping);
@@ -887,27 +901,40 @@
         function addMapping() {
             mappingId++;
 
-            const mapping = document.createElement("div");
-
             const from = document.createElement("select");
             from.name = `from${mappingId}`;
             from.appendChild(linuxKeyCodesTemplate.content.cloneNode(true));
-            mapping.appendChild(from);
 
             const to = document.createElement("select");
             to.name = `to${mappingId}`;
             to.appendChild(androidKeysTemplate.content.cloneNode(true));
-            mapping.appendChild(to);
 
             const removeButton = document.createElement("button");
             removeButton.type = "button";
             removeButton.textContent = "Remove";
-            removeButton.addEventListener("click", () => {
-                mapping.remove();
+            removeButton.addEventListener("click", e => {
+                removeTableRow(e.target);
             });
-            mapping.appendChild(removeButton);
 
-            addButton.parentNode.insertBefore(mapping, addButton);
+            tbody.appendChild(createTableRow([
+                from,
+                to,
+                removeButton
+            ]));
+
+            function createTableRow(elements) {
+                const row = document.createElement("tr");
+                for (const element of elements) {
+                    const td = document.createElement("td");
+                    td.appendChild(element);
+                    row.appendChild(td);
+                }
+                return row;
+            }
+
+            function removeTableRow(target) {
+                target.closest("tr").remove();
+            }
         }
     </script>
 </div>

@@ -1,8 +1,7 @@
 package ris58h.exkeymo.web;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Layouts {
     private static final String DEFAULT = "type OVERLAY\n";
@@ -27,27 +26,52 @@ public class Layouts {
 
         StringBuilder sb = new StringBuilder();
 
+        mappings = writeBaseLayout(layout, mappings, sb);
+
+        if (!mappings.isEmpty()) {
+            sb.append('\n').append(MODIFICATIONS_TRAILING_COMMENT);
+            for (Map.Entry<String, String> e : mappings.entrySet()) {
+                String code = e.getKey();
+                String keyCode = e.getValue();
+                sb.append("map key ").append(code).append(' ').append(keyCode).append('\n');
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Writes a base layout to StringBuilder.
+     * Comments out base mappings if they have the same codes in user mappings.
+     * If both code and keyCode are the same, removes such mappings from user mappings.
+     * @return remaining user mappings.
+     */
+    private static Map<String, String> writeBaseLayout(String layout, Map<String, String> mappings, StringBuilder sb) {
+        if (!layout.contains("map ")) {
+            sb.append(layout);
+            return mappings;
+        }
+        mappings = new HashMap<>(mappings);
         try (Scanner scanner = new Scanner(layout)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 MapKey mapKey = parseMapKey(line);
                 if (mapKey != null) {
                     String code = (mapKey.usage ? "usage " : "") + mapKey.code;
-                    if (mappings.containsKey(code)) {
-                        sb.append(MODIFICATIONS_TRAILING_COMMENT);
-                        sb.append("# ");
+                    String keyCode = mappings.get(code);
+                    if (keyCode != null) {
+                        if (keyCode.equals(mapKey.keyCode)) {
+                            mappings.remove(code);
+                        } else {
+                            sb.append(MODIFICATIONS_TRAILING_COMMENT);
+                            sb.append("# ");
+                        }
                     }
                 }
                 sb.append(line).append('\n');
             }
         }
-        sb.append('\n').append(MODIFICATIONS_TRAILING_COMMENT);
-        for (Map.Entry<String, String> e : mappings.entrySet()) {
-            String code = e.getKey();
-            String keyCode = e.getValue();
-            sb.append("map key ").append(code).append(' ').append(keyCode).append('\n');
-        }
-        return sb.toString();
+        return mappings;
     }
 
     private static MapKey parseMapKey(String line) {

@@ -116,6 +116,9 @@ public class Layouts {
     }
 
     private static String readLayout(String name) {
+        if (name.isEmpty()) {
+            return null;
+        }
         byte[] bytes = Resources.readAllBytesSafe("/kcm/" + name);
         return bytes == null ? null : new String(bytes, StandardCharsets.UTF_8);
     }

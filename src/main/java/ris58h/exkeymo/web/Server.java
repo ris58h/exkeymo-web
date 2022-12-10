@@ -1,6 +1,7 @@
 package ris58h.exkeymo.web;
 
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +12,10 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
@@ -21,8 +24,6 @@ public class Server {
     private final int threads;
     private final ApkBuilder apkBuilder;
 
-    byte[] htmlBytes;
-
     public Server(int port, int threads, ApkBuilder appBuilder) {
         this.port = port;
         this.threads = threads;
@@ -30,47 +31,143 @@ public class Server {
     }
 
     public void init() throws Exception {
-        this.htmlBytes = Utils.readAllBytes(Server.class, "/index.html");
-
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(Executors.newFixedThreadPool(threads));
-        server.createContext("/", exchange -> {
-            String requestMethod = exchange.getRequestMethod();
-
-            if ("GET".equals(requestMethod)) {
-                doGet(exchange);
-                return;
-            }
-
-            if ("POST".equals(requestMethod)) {
-                doPost(exchange);
-                return;
-            }
-
-            exchange.sendResponseHeaders(404, -1);
-        });
+        server.createContext("/", this::handleRoot);
+        server.createContext("/simple", this::handleSimple);
+        server.createContext("/complex", this::handleComplex);
+        server.createContext("/docs", this::handleDocs);
+        server.createContext("/common.css", exchange -> doGetCss(exchange, "/common.css"));
 
         server.start();
         log.info("Server started at port " + port);
     }
 
-    private void doGet(HttpExchange exchange) throws IOException {
-        exchange.getResponseHeaders().set("Content-Type", "text/html");
+    private void handleRoot(HttpExchange exchange) throws IOException {
+        exchange.getResponseHeaders().set("Location", "/simple");
+        exchange.sendResponseHeaders(302, -1);
+    }
+
+    private void handleGetPost(HttpExchange exchange, HttpHandler getHandler, HttpHandler postHandler) throws IOException {
+        String requestMethod = exchange.getRequestMethod();
+
+        if ("GET".equals(requestMethod)) {
+            getHandler.handle(exchange);
+            return;
+        }
+
+        if ("POST".equals(requestMethod)) {
+            postHandler.handle(exchange);
+            return;
+        }
+
+        exchange.sendResponseHeaders(404, -1);
+    }
+
+    private void handleSimple(HttpExchange exchange) throws IOException {
+        handleGetPost(exchange, this::doSimpleGet, this::doSimplePost);
+    }
+
+    private void handleComplex(HttpExchange exchange) throws IOException {
+        handleGetPost(exchange, this::doComplexGet, this::doComplexPost);
+    }
+
+    private void handleDocs(HttpExchange exchange) throws IOException {
+        doGetText(exchange, "/docs.html");
+    }
+
+    private void doSimpleGet(HttpExchange exchange) throws IOException {
+        doGetText(exchange, "/simple.html");
+    }
+
+    private void doSimplePost(HttpExchange exchange) throws IOException {
+        doPost(exchange, params -> {
+            String layoutName = null;
+            String layout2Name = null;
+            Map<String, String> mappings = new HashMap<>();
+            for (Map.Entry<String, String> e : params.entrySet()) {
+                String key = e.getKey();
+                String value = e.getValue();
+                if (key.startsWith("from")) {
+                    if (value.isEmpty()) {
+                        continue;
+                    }
+                    String keyCode = params.get("to" + key.substring(4));
+                    if (keyCode == null || keyCode.isEmpty()) {
+                        continue;
+                    }
+                    mappings.put(value, keyCode);
+                } else if (key.equals("layout")) {
+                    layoutName = value;
+                } else if (key.equals("layout2")) {
+                    layout2Name = value;
+                }
+            }
+
+            if (layout2Name == null) {
+                String layout = Layouts.fromNamedLayout(layoutName, mappings);
+                return List.of(layout);
+            } else {
+                String layout = Layouts.fromNamedLayout(layoutName, mappings);
+                String layout2 = Layouts.fromNamedLayout(layout2Name, mappings);
+                return List.of(layout, layout2);
+            }
+        });
+    }
+
+    private void doComplexGet(HttpExchange exchange) throws IOException {
+        doGetText(exchange, "/complex.html");
+    }
+
+    private void doComplexPost(HttpExchange exchange) throws IOException {
+        doPost(exchange, params -> {
+            String layout = params.get("layout");
+            if (layout == null) {
+                return List.of();
+            }
+            String layout2 = params.get("layout2");
+            if (layout2 == null) {
+                return List.of(layout);
+            }
+            return List.of(layout, layout2);
+        });
+    }
+
+    private static void doGetText(HttpExchange exchange, String resourcePath) throws IOException {
+        doGet(exchange, resourcePath, "text/html");
+    }
+
+    private static void doGetCss(HttpExchange exchange, String resourcePath) throws IOException {
+        doGet(exchange, resourcePath, "text/css");
+    }
+
+    private static void doGet(HttpExchange exchange, String resourcePath, String contentType) throws IOException {
+        byte[] htmlBytes = Resources.readAllBytesSafe("/public" + resourcePath);
+
+        if (htmlBytes == null) {
+            exchange.sendResponseHeaders(404, -1);
+            return;
+        }
+
+        exchange.getResponseHeaders().set("Content-Type", contentType);
         exchange.sendResponseHeaders(200, htmlBytes.length);
         OutputStream os = exchange.getResponseBody();
         os.write(htmlBytes);
         os.close();
     }
 
-    private void doPost(HttpExchange exchange) throws IOException {
+    private void doPost(HttpExchange exchange, Function<Map<String, String>, List<String>> paramsToLayouts) throws IOException {
         Map<String, String> params = parseParams(new String(exchange.getRequestBody().readAllBytes()));
 
-        String layout = params.get("layout");
-        String layout2 = params.get("layout2");
-        if (layout == null) {
+        List<String> layouts = paramsToLayouts.apply(params);
+
+        if (layouts.isEmpty() || layouts.size() > 2) {
             exchange.sendResponseHeaders(400, -1);
             return;
         }
+
+        String layout = layouts.get(0);
+        String layout2 = layouts.size() > 1 ? layouts.get(1) : null;
 
         byte[] bytes;
         try {

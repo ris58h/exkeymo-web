@@ -83,6 +83,7 @@ public class Server {
     private void doSimplePost(HttpExchange exchange) throws IOException {
         doPost(exchange, params -> {
             String layoutName = null;
+            String layout2Name = null;
             Map<String, String> mappings = new HashMap<>();
             for (Map.Entry<String, String> e : params.entrySet()) {
                 String key = e.getKey();
@@ -96,14 +97,21 @@ public class Server {
                         continue;
                     }
                     mappings.put(value, keyCode);
-                } else if (key.equals("layout") && !value.isEmpty()) {
+                } else if (key.equals("layout")) {
                     layoutName = value;
+                } else if (key.equals("layout2")) {
+                    layout2Name = value;
                 }
             }
 
-            String layout = Layouts.fromNamedLayout(layoutName, mappings);
-            //TODO: multiple layouts
-            return List.of(layout);
+            if (layout2Name == null) {
+                String layout = Layouts.fromNamedLayout(layoutName, mappings);
+                return List.of(layout);
+            } else {
+                String layout = Layouts.fromNamedLayout(layoutName, mappings);
+                String layout2 = Layouts.fromNamedLayout(layout2Name, mappings);
+                return List.of(layout, layout2);
+            }
         });
     }
 

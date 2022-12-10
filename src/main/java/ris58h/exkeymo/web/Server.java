@@ -104,7 +104,7 @@ public class Server {
                 }
             }
 
-            if (layout2Name == null) {
+            if (layout2Name == null || layout2Name.equals("-")) {
                 String layout = Layouts.fromNamedLayout(layoutName, mappings);
                 return List.of(layout);
             } else {

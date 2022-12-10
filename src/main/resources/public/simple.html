@@ -89,7 +89,7 @@
     </form>
 
     <template id="linux-keycodes">
-        <optgroup label="Modifier keys">
+        <optgroup label="Modifiers">
             <option value="58">CAPS_LOCK</option>
             <option value="42">SHIFT_LEFT</option>
             <option value="54">SHIFT_RIGHT</option>
@@ -100,6 +100,19 @@
             <option value="125">META_LEFT</option>
             <option value="126">META_RIGHT</option>
             <option value="464">FUNCTION</option>
+        </optgroup>
+        <optgroup label="Navigation">
+            <option value="103">DPAD_UP</option>
+            <option value="108">DPAD_DOWN</option>
+            <option value="105">DPAD_LEFT</option>
+            <option value="106">DPAD_RIGHT</option>
+            <option value="353">DPAD_CENTER</option>
+            <option value="104">PAGE_UP</option>
+            <option value="109">PAGE_DOWN</option>
+            <option value="177">SCROLL_UP</option>
+            <option value="178">SCROLL_DOWN</option>
+            <option value="102">MOVE_HOME</option>
+            <option value="107">MOVE_END</option>
         </optgroup>
         <option value="1">ESCAPE</option>
         <option value="2">1</option>
@@ -195,14 +208,6 @@
         <option value="98">NUMPAD_DIVIDE</option>
         <option value="99">SYSRQ</option>
         <!--<option value="101">KEY_LINEFEED</option>-->
-        <option value="102">MOVE_HOME</option>
-        <option value="103">DPAD_UP</option>
-        <option value="104">PAGE_UP</option>
-        <option value="105">DPAD_LEFT</option>
-        <option value="106">DPAD_RIGHT</option>
-        <option value="107">MOVE_END</option>
-        <option value="108">DPAD_DOWN</option>
-        <option value="109">PAGE_DOWN</option>
         <option value="110">INSERT</option>
         <option value="111">FORWARD_DEL</option>
         <!--<option value="112">KEY_MACRO</option>-->
@@ -268,8 +273,6 @@
         <!--<option value="174">KEY_EXIT</option>-->
         <!--<option value="175">KEY_MOVE</option>-->
         <!--<option value="176">KEY_EDIT</option>-->
-        <option value="177">PAGE_UP</option>
-        <option value="178">PAGE_DOWN</option>
         <option value="179">NUMPAD_LEFT_PAREN</option>
         <option value="180">NUMPAD_RIGHT_PAREN</option>
         <!--<option value="181">KEY_NEW</option>-->
@@ -366,7 +369,6 @@
         <option value="317">BUTTON_THUMBL</option>
         <option value="318">BUTTON_THUMBR</option>
         <!--<option value="352">KEY_OK</option>-->
-        <option value="353">DPAD_CENTER</option>
         <!--<option value="354">KEY_GOTO</option>-->
         <!--<option value="355">KEY_CLEAR</option>-->
         <!--<option value="356">KEY_POWER2</option>-->
@@ -482,7 +484,7 @@
         <option value="usage 0x0c01A2">ALL_APPS</option>
     </template>
     <template id="android-keys">
-        <optgroup label="Modifier keys">
+        <optgroup label="Modifiers">
             <option value="CAPS_LOCK">CAPS_LOCK</option>
             <option value="SHIFT_LEFT">SHIFT_LEFT</option>
             <option value="SHIFT_RIGHT">SHIFT_RIGHT</option>
@@ -493,6 +495,17 @@
             <option value="META_LEFT">META_LEFT</option>
             <option value="META_RIGHT">META_RIGHT</option>
             <option value="FUNCTION">FUNCTION</option>
+        </optgroup>
+        <optgroup label="Navigation">
+            <option value="DPAD_UP">DPAD_UP</option>
+            <option value="DPAD_DOWN">DPAD_DOWN</option>
+            <option value="DPAD_LEFT">DPAD_LEFT</option>
+            <option value="DPAD_RIGHT">DPAD_RIGHT</option>
+            <option value="DPAD_CENTER">DPAD_CENTER</option>
+            <option value="PAGE_UP">PAGE_UP</option>
+            <option value="PAGE_DOWN">PAGE_DOWN</option>
+            <option value="MOVE_HOME">MOVE_HOME</option>
+            <option value="MOVE_END">MOVE_END</option>
         </optgroup>
         <option value="ESCAPE">ESCAPE</option>
         <option value="1">1</option>
@@ -588,14 +601,6 @@
         <option value="NUMPAD_DIVIDE">NUMPAD_DIVIDE</option>
         <option value="SYSRQ">SYSRQ</option>
         <!--<option value="101">KEY_LINEFEED</option>-->
-        <option value="MOVE_HOME">MOVE_HOME</option>
-        <option value="DPAD_UP">DPAD_UP</option>
-        <option value="PAGE_UP">PAGE_UP</option>
-        <option value="DPAD_LEFT">DPAD_LEFT</option>
-        <option value="DPAD_RIGHT">DPAD_RIGHT</option>
-        <option value="MOVE_END">MOVE_END</option>
-        <option value="DPAD_DOWN">DPAD_DOWN</option>
-        <option value="PAGE_DOWN">PAGE_DOWN</option>
         <option value="INSERT">INSERT</option>
         <option value="FORWARD_DEL">FORWARD_DEL</option>
         <!--<option value="112">KEY_MACRO</option>-->
@@ -759,7 +764,6 @@
         <option value="BUTTON_THUMBL">BUTTON_THUMBL</option>
         <option value="BUTTON_THUMBR">BUTTON_THUMBR</option>
         <!--<option value="352">KEY_OK</option>-->
-        <option value="DPAD_CENTER">DPAD_CENTER</option>
         <!--<option value="354">KEY_GOTO</option>-->
         <!--<option value="355">KEY_CLEAR</option>-->
         <!--<option value="356">KEY_POWER2</option>-->

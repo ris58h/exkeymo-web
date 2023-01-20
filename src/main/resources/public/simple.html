@@ -971,77 +971,77 @@
     </template>
 
     <script>
-        let mappingId = 0;
+        let mappingId = 0
 
-        const addButton = document.querySelector("#add");
-        const removeAllButton = document.querySelector("#removeAll");
-        const linuxKeyCodesTemplate = document.querySelector("#linux-keycodes");
-        const androidKeysTemplate = document.querySelector("#android-keys");
-        const tbody = document.querySelector("#tbody");
-        const layout = document.querySelector("#layout");
-        const layout2 = document.querySelector("#layout2");
-        const layoutsTemplate = document.querySelector("#layouts");
+        const addButton = document.querySelector("#add")
+        const removeAllButton = document.querySelector("#removeAll")
+        const linuxKeyCodesTemplate = document.querySelector("#linux-keycodes")
+        const androidKeysTemplate = document.querySelector("#android-keys")
+        const tbody = document.querySelector("#tbody")
+        const layout = document.querySelector("#layout")
+        const layout2 = document.querySelector("#layout2")
+        const layoutsTemplate = document.querySelector("#layouts")
 
-        addMapping();
-        addButton.addEventListener("click", addMapping);
-        removeAllButton.addEventListener("click", removeAllMappings);
+        addMapping()
+        addButton.addEventListener("click", addMapping)
+        removeAllButton.addEventListener("click", removeAllMappings)
 
-        layout.appendChild(layoutsTemplate.content.cloneNode(true));
-        layout2.appendChild(layoutsTemplate.content.cloneNode(true));
+        layout.appendChild(layoutsTemplate.content.cloneNode(true))
+        layout2.appendChild(layoutsTemplate.content.cloneNode(true))
 
         function addMapping() {
-            mappingId++;
+            mappingId++
 
-            const from = createSelect();
-            from.name = `from${mappingId}`;
-            from.appendChild(linuxKeyCodesTemplate.content.cloneNode(true));
+            const from = createSelect()
+            from.name = `from${mappingId}`
+            from.appendChild(linuxKeyCodesTemplate.content.cloneNode(true))
 
-            const to = createSelect();
-            to.name = `to${mappingId}`;
-            to.appendChild(androidKeysTemplate.content.cloneNode(true));
+            const to = createSelect()
+            to.name = `to${mappingId}`
+            to.appendChild(androidKeysTemplate.content.cloneNode(true))
 
-            const removeButton = document.createElement("button");
-            removeButton.type = "button";
-            removeButton.textContent = "Remove";
+            const removeButton = document.createElement("button")
+            removeButton.type = "button"
+            removeButton.textContent = "Remove"
             removeButton.addEventListener("click", e => {
-                removeTableRow(e.target);
-            });
+                removeTableRow(e.target)
+            })
 
             tbody.appendChild(createTableRow([
                 from,
                 to,
                 removeButton
-            ]));
+            ]))
 
             function createSelect() {
-                const option = document.createElement("option");
-                option.value = "";
-                option.selected = true;
+                const option = document.createElement("option")
+                option.value = ""
+                option.selected = true
 
-                const select = document.createElement("select");
-                select.required = true;
-                select.appendChild(option);
+                const select = document.createElement("select")
+                select.required = true
+                select.appendChild(option)
 
-                return select;
+                return select
             }
 
             function createTableRow(elements) {
-                const row = document.createElement("tr");
+                const row = document.createElement("tr")
                 for (const element of elements) {
-                    const td = document.createElement("td");
-                    td.appendChild(element);
-                    row.appendChild(td);
+                    const td = document.createElement("td")
+                    td.appendChild(element)
+                    row.appendChild(td)
                 }
-                return row;
+                return row
             }
 
             function removeTableRow(target) {
-                target.closest("tr").remove();
+                target.closest("tr").remove()
             }
         }
 
         function removeAllMappings() {
-            tbody.replaceChildren();
+            tbody.replaceChildren()
         }
     </script>
 </div>

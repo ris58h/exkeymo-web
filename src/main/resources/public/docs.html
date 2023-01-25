@@ -49,20 +49,20 @@
     <h2>Layout customization</h2>
     <p>
         The keyboard layout is customized via <a target="_blank" href="https://source.android.com/docs/core/input/key-character-map-files">Key Character Map</a> files.
-        To remap a physical key use <code>map key KEY_CODE ANDROID_KEY</code> syntax
-        where <code>KEY_CODE</code> is the code that produced by the physical key
+        To remap a physical key use <code>map key SCAN_CODE ANDROID_KEY</code> syntax
+        where <code>SCAN_CODE</code> is the code that produced by the physical key
         and <code>ANDROID_KEY</code> is an Android key such as <code>ENTER</code>,
         <code>BRIGHTNESS_UP</code> or just a plain character like <code>1</code> or <code>A</code>.
-        The default keyboard layout can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key KEY_CODE ANDROID_KEY</code>.
+        The default keyboard layout can be found in <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a> file in format <code>key SCAN_CODE ANDROID_KEY</code>.
     </p>
     <p>
         For example you want to swap <kbd>Caps Lock</kbd> key and <kbd>Esc</kbd> key.
         To do this you need to map <kbd>Caps Lock</kbd> key to <kbd>Esc</kbd> key and vice versa.
-        Open <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a>
-        and find out what <code>KEY_CODE</code> (2-nd column) is produced by each <code>ANDROID_KEY</code> (3-rd column).
-        It's <code>1</code> for <code>ESCAPE</code> and <code>58</code> for <code>CAPS_LOCK</code> by default.
-        Add corresponding mappings in format <code>map key KEY_CODE ANDROID_KEY</code>.
-        And don't forget to add <code>type OVERLAY</code> as the very first line.
+        According to <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kl">Generic.kl</a>
+        the default <code>SCAN_CODE</code> to <code>ANDROID_KEY</code> mapping these keys are <code>1</code> to <code>ESCAPE</code> and <code>58</code> to <code>CAPS_LOCK</code>.
+        Now you can add desired mappings to your custom layout in format <code>map key SCAN_CODE ANDROID_KEY</code>.
+        And don't forget to include <a target="_blank" href="https://android.googlesource.com/platform/frameworks/base/+/master/data/keyboards/Generic.kcm">default mappings</a>
+        by adding <code>type OVERLAY</code> as the very first line.
         The final result will be:
     </p>
     <pre>
@@ -73,10 +73,9 @@ map key 1 CAPS_LOCK
 </pre>
     <p>
         Some keyboards have media-keys or other keys that don't work as expected.
-        To remap them you should find out what key codes they produce.
+        To remap them you should find out what scan codes they produce.
         There are several Android apps to do it.
-        For example <a target="_blank" href="https://play.google.com/store/apps/details?id=ru.elron.gamepadtester">Gamepad tester</a>
-        (note that it uses 'scan code' to refer to a key code).
+        For example <a target="_blank" href="https://play.google.com/store/apps/details?id=ru.elron.gamepadtester">Gamepad tester</a>.
     </p>
     <p>
         More complex customization (combinations with modifier keys like <kbd>Ctrl</kbd>, <kbd>Alt</kbd>, <kbd>Shift</kbd>

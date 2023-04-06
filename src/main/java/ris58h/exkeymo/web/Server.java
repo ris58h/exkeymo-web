@@ -65,22 +65,22 @@ public class Server {
     }
 
     private void handleSimple(HttpExchange exchange) throws IOException {
-        handleGetPost(exchange, this::doSimpleGet, this::doSimplePost);
+        handleGetPost(exchange, this::doGetSimple, this::doPostSimple);
     }
 
     private void handleComplex(HttpExchange exchange) throws IOException {
-        handleGetPost(exchange, this::doComplexGet, this::doComplexPost);
+        handleGetPost(exchange, this::doGetComplex, this::doPostComplex);
     }
 
     private void handleDocs(HttpExchange exchange) throws IOException {
-        doGetText(exchange, "/docs.html");
+        doGetHtml(exchange, "/docs.html");
     }
 
-    private void doSimpleGet(HttpExchange exchange) throws IOException {
-        doGetText(exchange, "/simple.html");
+    private void doGetSimple(HttpExchange exchange) throws IOException {
+        doGetHtml(exchange, "/simple.html");
     }
 
-    private void doSimplePost(HttpExchange exchange) throws IOException {
+    private void doPostSimple(HttpExchange exchange) throws IOException {
         doPost(exchange, params -> {
             String layoutName = null;
             String layout2Name = null;
@@ -115,11 +115,11 @@ public class Server {
         });
     }
 
-    private void doComplexGet(HttpExchange exchange) throws IOException {
-        doGetText(exchange, "/complex.html");
+    private void doGetComplex(HttpExchange exchange) throws IOException {
+        doGetHtml(exchange, "/complex.html");
     }
 
-    private void doComplexPost(HttpExchange exchange) throws IOException {
+    private void doPostComplex(HttpExchange exchange) throws IOException {
         doPost(exchange, params -> {
             String layout = params.get("layout");
             if (layout == null) {
@@ -133,7 +133,7 @@ public class Server {
         });
     }
 
-    private static void doGetText(HttpExchange exchange, String resourcePath) throws IOException {
+    private static void doGetHtml(HttpExchange exchange, String resourcePath) throws IOException {
         doGet(exchange, resourcePath, "text/html");
     }
 

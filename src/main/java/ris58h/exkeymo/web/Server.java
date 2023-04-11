@@ -42,10 +42,7 @@ public class Server {
     private void handleRoot(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         switch (path) {
-            case "/" -> {
-                exchange.getResponseHeaders().set("Location", "/simple");
-                exchange.sendResponseHeaders(302, -1);
-            }
+            case "/" -> doRedirect(exchange, "/simple");
             case "/simple" -> handleGetPost(exchange, this::doGetSimple, this::doPostSimple);
             case "/complex" -> handleGetPost(exchange, this::doGetComplex, this::doPostComplex);
             case "/docs" -> doGetPublic(exchange, "/docs.html");
@@ -73,6 +70,11 @@ public class Server {
         }
 
         exchange.sendResponseHeaders(404, -1);
+    }
+
+    private void doRedirect(HttpExchange exchange, String path) throws IOException {
+        exchange.getResponseHeaders().set("Location", path);
+        exchange.sendResponseHeaders(302, -1);
     }
 
     private void doGetPublic(HttpExchange exchange, String path) throws IOException {

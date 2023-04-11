@@ -24,4 +24,8 @@ public class Resources {
     public static InputStream getAsStream(String path) {
         return Resources.class.getResourceAsStream(path);
     }
+
+    public static boolean exists(String path) {
+        return Resources.class.getResource(path) != null;
+    }
 }

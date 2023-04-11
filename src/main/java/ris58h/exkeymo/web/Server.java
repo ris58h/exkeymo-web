@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
+    private static final String PUBLIC_RESOURCES_PATH = "/public";
 
     private final int port;
     private final int threads;
@@ -34,18 +35,28 @@ public class Server {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(Executors.newFixedThreadPool(threads));
         server.createContext("/", this::handleRoot);
-        server.createContext("/simple", this::handleSimple);
-        server.createContext("/complex", this::handleComplex);
-        server.createContext("/docs", this::handleDocs);
-        server.createContext("/common.css", exchange -> doGetCss(exchange, "/common.css"));
-
         server.start();
         log.info("Server started at port " + port);
     }
 
     private void handleRoot(HttpExchange exchange) throws IOException {
-        exchange.getResponseHeaders().set("Location", "/simple");
-        exchange.sendResponseHeaders(302, -1);
+        String path = exchange.getRequestURI().getPath();
+        switch (path) {
+            case "/" -> {
+                exchange.getResponseHeaders().set("Location", "/simple");
+                exchange.sendResponseHeaders(302, -1);
+            }
+            case "/simple" -> handleGetPost(exchange, this::doGetSimple, this::doPostSimple);
+            case "/complex" -> handleGetPost(exchange, this::doGetComplex, this::doPostComplex);
+            case "/docs" -> doGetPublic(exchange, "/docs.html");
+            default -> {
+                if (Resources.exists(PUBLIC_RESOURCES_PATH + path)) {
+                    doGetPublic(exchange, path);
+                } else {
+                    exchange.sendResponseHeaders(404, -1);
+                }
+            }
+        }
     }
 
     private void handleGetPost(HttpExchange exchange, HttpHandler getHandler, HttpHandler postHandler) throws IOException {
@@ -64,20 +75,18 @@ public class Server {
         exchange.sendResponseHeaders(404, -1);
     }
 
-    private void handleSimple(HttpExchange exchange) throws IOException {
-        handleGetPost(exchange, this::doGetSimple, this::doPostSimple);
-    }
-
-    private void handleComplex(HttpExchange exchange) throws IOException {
-        handleGetPost(exchange, this::doGetComplex, this::doPostComplex);
-    }
-
-    private void handleDocs(HttpExchange exchange) throws IOException {
-        doGetHtml(exchange, "/docs.html");
+    private void doGetPublic(HttpExchange exchange, String path) throws IOException {
+        if (path.endsWith(".html")) {
+            doGet(exchange, path, "text/html");
+        } else if (path.endsWith(".css")) {
+            doGet(exchange, path, "text/css");
+        } else {
+            doGet(exchange, path, "text/plain");
+        }
     }
 
     private void doGetSimple(HttpExchange exchange) throws IOException {
-        doGetHtml(exchange, "/simple.html");
+        doGetPublic(exchange, "/simple.html");
     }
 
     private void doPostSimple(HttpExchange exchange) throws IOException {
@@ -116,7 +125,7 @@ public class Server {
     }
 
     private void doGetComplex(HttpExchange exchange) throws IOException {
-        doGetHtml(exchange, "/complex.html");
+        doGetPublic(exchange, "/complex.html");
     }
 
     private void doPostComplex(HttpExchange exchange) throws IOException {
@@ -133,16 +142,8 @@ public class Server {
         });
     }
 
-    private static void doGetHtml(HttpExchange exchange, String resourcePath) throws IOException {
-        doGet(exchange, resourcePath, "text/html");
-    }
-
-    private static void doGetCss(HttpExchange exchange, String resourcePath) throws IOException {
-        doGet(exchange, resourcePath, "text/css");
-    }
-
-    private static void doGet(HttpExchange exchange, String resourcePath, String contentType) throws IOException {
-        byte[] htmlBytes = Resources.readAllBytesSafe("/public" + resourcePath);
+    private static void doGet(HttpExchange exchange, String path, String contentType) throws IOException {
+        byte[] htmlBytes = Resources.readAllBytesSafe(PUBLIC_RESOURCES_PATH + path);
 
         if (htmlBytes == null) {
             exchange.sendResponseHeaders(404, -1);

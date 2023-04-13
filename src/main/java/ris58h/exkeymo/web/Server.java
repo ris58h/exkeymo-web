@@ -50,7 +50,7 @@ public class Server {
                 if (Resources.exists(PUBLIC_RESOURCES_PATH + path)) {
                     doGetPublic(exchange, path);
                 } else {
-                    exchange.sendResponseHeaders(404, -1);
+                    doNotFound(exchange);
                 }
             }
         }
@@ -69,12 +69,16 @@ public class Server {
             return;
         }
 
-        exchange.sendResponseHeaders(404, -1);
+        doNotFound(exchange);
     }
 
     private void doRedirect(HttpExchange exchange, String path) throws IOException {
         exchange.getResponseHeaders().set("Location", path);
         exchange.sendResponseHeaders(302, -1);
+    }
+
+    private static void doNotFound(HttpExchange exchange) throws IOException {
+        exchange.sendResponseHeaders(404, -1);
     }
 
     private void doGetPublic(HttpExchange exchange, String path) throws IOException {
@@ -148,7 +152,7 @@ public class Server {
         byte[] htmlBytes = Resources.readAllBytesSafe(PUBLIC_RESOURCES_PATH + path);
 
         if (htmlBytes == null) {
-            exchange.sendResponseHeaders(404, -1);
+            doNotFound(exchange);
             return;
         }
 

@@ -56,7 +56,7 @@ public class Server {
         }
     }
 
-    private void handleGetPost(HttpExchange exchange, HttpHandler getHandler, HttpHandler postHandler) throws IOException {
+    private static void handleGetPost(HttpExchange exchange, HttpHandler getHandler, HttpHandler postHandler) throws IOException {
         String requestMethod = exchange.getRequestMethod();
 
         if ("GET".equals(requestMethod)) {
@@ -72,7 +72,7 @@ public class Server {
         doNotFound(exchange);
     }
 
-    private void doRedirect(HttpExchange exchange, String path) throws IOException {
+    private static void doRedirect(HttpExchange exchange, String path) throws IOException {
         exchange.getResponseHeaders().set("Location", path);
         exchange.sendResponseHeaders(302, -1);
     }
@@ -81,7 +81,7 @@ public class Server {
         exchange.sendResponseHeaders(404, -1);
     }
 
-    private void doGetPublic(HttpExchange exchange, String path) throws IOException {
+    private static void doGetPublic(HttpExchange exchange, String path) throws IOException {
         if (path.endsWith(".html")) {
             doGet(exchange, path, "text/html");
         } else if (path.endsWith(".css")) {

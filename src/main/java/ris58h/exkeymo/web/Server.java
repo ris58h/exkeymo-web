@@ -43,8 +43,8 @@ public class Server {
         String path = exchange.getRequestURI().getPath();
         switch (path) {
             case "/" -> handleGet(exchange, e -> serveRedirect(exchange, "/simple"));
-            case "/simple" -> handleGetPost(exchange, e -> servePublicResource(e, "/simple.html"), this::doPostSimple);
-            case "/complex" -> handleGetPost(exchange, e -> servePublicResource(e, "/complex.html"), this::doPostComplex);
+            case "/simple" -> handleGetPost(exchange, e -> servePublicResource(e, "/simple.html"), this::serveApkWithSimpleLayouts);
+            case "/complex" -> handleGetPost(exchange, e -> servePublicResource(e, "/complex.html"), this::serveApkWithComplexLayouts);
             case "/docs" -> handleGet(exchange, e -> servePublicResource(exchange, "/docs.html"));
             default -> handleGet(exchange, e -> servePublicResource(e, path));
         }
@@ -134,8 +134,8 @@ public class Server {
         ));
     }
 
-    private void doPostSimple(HttpExchange exchange) throws IOException {
-        doPost(exchange, params -> {
+    private void serveApkWithSimpleLayouts(HttpExchange exchange) throws IOException {
+        serveApkWithLayouts(exchange, params -> {
             String layoutName = null;
             String layout2Name = null;
             Map<String, String> mappings = new HashMap<>();
@@ -169,8 +169,8 @@ public class Server {
         });
     }
 
-    private void doPostComplex(HttpExchange exchange) throws IOException {
-        doPost(exchange, params -> {
+    private void serveApkWithComplexLayouts(HttpExchange exchange) throws IOException {
+        serveApkWithLayouts(exchange, params -> {
             String layout = params.get("layout");
             if (layout == null) {
                 return List.of();
@@ -183,7 +183,7 @@ public class Server {
         });
     }
 
-    private void doPost(HttpExchange exchange, Function<Map<String, String>, List<String>> paramsToLayouts) throws IOException {
+    private void serveApkWithLayouts(HttpExchange exchange, Function<Map<String, String>, List<String>> paramsToLayouts) throws IOException {
         Map<String, String> params = parseParams(new String(exchange.getRequestBody().readAllBytes()));
 
         List<String> layouts = paramsToLayouts.apply(params);

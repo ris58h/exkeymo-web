@@ -72,21 +72,53 @@ public class Server {
         serveNotFound(exchange);
     }
 
+    private record Response(int code, Map<String, String> headers, byte[] body) {
+        public Response(int code) {
+            this(code, null, null);
+        }
+
+        public Response(int code, Map<String, String> headers) {
+            this(code, headers, null);
+        }
+
+        public Response(int code, String body) {
+            this(code, null, body.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private static void serveResponse(HttpExchange exchange, Response response) throws IOException {
+        if (response.headers != null) {
+            response.headers.forEach((key, value) -> {
+                exchange.getResponseHeaders().set(key, value);
+            });
+        }
+        if (response.body == null) {
+            exchange.sendResponseHeaders(response.code, -1);
+        } else {
+            exchange.sendResponseHeaders(response.code, response.body.length);
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(response.body);
+            }
+        }
+    }
+
     private static void serveRedirect(HttpExchange exchange, String path) throws IOException {
-        exchange.getResponseHeaders().set("Location", path);
-        exchange.sendResponseHeaders(302, -1);
+        serveResponse(exchange, new Response(
+                302,
+                Map.of("Location", path)
+        ));
+    }
+
+    private static void serveBadRequest(HttpExchange exchange) throws IOException {
+        serveResponse(exchange, new Response(400));
     }
 
     private static void serveNotFound(HttpExchange exchange) throws IOException {
-        exchange.sendResponseHeaders(404, -1);
+        serveResponse(exchange, new Response(404));
     }
 
     private static void serveError(HttpExchange exchange, String body) throws IOException {
-        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-        exchange.sendResponseHeaders(500, bytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(bytes);
-        }
+        serveResponse(exchange, new Response(500, body));
     }
 
     private static void servePublicResource(HttpExchange exchange, String path) throws IOException {
@@ -156,11 +188,11 @@ public class Server {
             return;
         }
 
-        exchange.getResponseHeaders().set("Content-Type", contentType);
-        exchange.sendResponseHeaders(200, htmlBytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(htmlBytes);
-        }
+        serveResponse(exchange, new Response(
+                200,
+                Map.of("Content-Type", contentType),
+                htmlBytes
+        ));
     }
 
     private void doPost(HttpExchange exchange, Function<Map<String, String>, List<String>> paramsToLayouts) throws IOException {
@@ -169,7 +201,7 @@ public class Server {
         List<String> layouts = paramsToLayouts.apply(params);
 
         if (layouts.isEmpty() || layouts.size() > 2) {
-            exchange.sendResponseHeaders(400, -1);
+            serveBadRequest(exchange);
             return;
         }
 
@@ -185,12 +217,14 @@ public class Server {
             return;
         }
 
-        exchange.getResponseHeaders().set("Content-Type", "application/vnd.android.package-archive");
-        exchange.getResponseHeaders().set("Content-Disposition", "attachment; filename=\"ExKeyMo Keyboard Layout.apk\"");
-        exchange.sendResponseHeaders(200, bytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(bytes);
-        }
+        serveResponse(exchange, new Response(
+                200,
+                Map.of(
+                        "Content-Type", "application/vnd.android.package-archive",
+                        "Content-Disposition", "attachment; filename=\"ExKeyMo Keyboard Layout.apk\""
+                ),
+                bytes
+        ));
     }
 
     private static Map<String, String> parseParams(String request) {

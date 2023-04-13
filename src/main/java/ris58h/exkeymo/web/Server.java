@@ -42,17 +42,19 @@ public class Server {
     private void handleRoot(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         switch (path) {
-            case "/" -> serveRedirect(exchange, "/simple");
+            case "/" -> handleGet(exchange, e -> serveRedirect(exchange, "/simple"));
             case "/simple" -> handleGetPost(exchange, e -> servePublicResource(e, "/simple.html"), this::doPostSimple);
             case "/complex" -> handleGetPost(exchange, e -> servePublicResource(e, "/complex.html"), this::doPostComplex);
-            case "/docs" -> servePublicResource(exchange, "/docs.html");
-            default -> {
-                if (Resources.exists(PUBLIC_RESOURCES_PATH + path)) {
-                    servePublicResource(exchange, path);
-                } else {
-                    serveNotFound(exchange);
-                }
-            }
+            case "/docs" -> handleGet(exchange, e -> servePublicResource(exchange, "/docs.html"));
+            default -> handleGet(exchange, e -> servePublicResource(e, path));
+        }
+    }
+
+    private static void handleGet(HttpExchange exchange, HttpHandler getHandler) throws IOException {
+        if (exchange.getRequestMethod().equals("GET")) {
+            getHandler.handle(exchange);
+        } else {
+            serveBadRequest(exchange);
         }
     }
 
@@ -60,7 +62,7 @@ public class Server {
         switch (exchange.getRequestMethod()) {
             case "GET" -> getHandler.handle(exchange);
             case "POST" -> postHandler.handle(exchange);
-            default -> serveNotFound(exchange);
+            default -> serveBadRequest(exchange);
         }
     }
 
@@ -119,6 +121,19 @@ public class Server {
         }
     }
 
+    private static void servePublicResource(HttpExchange exchange, String path, String contentType) throws IOException {
+        byte[] htmlBytes = Resources.readAllBytesSafe(PUBLIC_RESOURCES_PATH + path);
+        if (htmlBytes == null) {
+            serveNotFound(exchange);
+            return;
+        }
+        serveResponse(exchange, new Response(
+                200,
+                Map.of("Content-Type", contentType),
+                htmlBytes
+        ));
+    }
+
     private void doPostSimple(HttpExchange exchange) throws IOException {
         doPost(exchange, params -> {
             String layoutName = null;
@@ -166,21 +181,6 @@ public class Server {
             }
             return List.of(layout, layout2);
         });
-    }
-
-    private static void servePublicResource(HttpExchange exchange, String path, String contentType) throws IOException {
-        byte[] htmlBytes = Resources.readAllBytesSafe(PUBLIC_RESOURCES_PATH + path);
-
-        if (htmlBytes == null) {
-            serveNotFound(exchange);
-            return;
-        }
-
-        serveResponse(exchange, new Response(
-                200,
-                Map.of("Content-Type", contentType),
-                htmlBytes
-        ));
     }
 
     private void doPost(HttpExchange exchange, Function<Map<String, String>, List<String>> paramsToLayouts) throws IOException {

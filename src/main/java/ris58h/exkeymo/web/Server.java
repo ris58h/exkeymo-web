@@ -57,19 +57,11 @@ public class Server {
     }
 
     private static void handleGetPost(HttpExchange exchange, HttpHandler getHandler, HttpHandler postHandler) throws IOException {
-        String requestMethod = exchange.getRequestMethod();
-
-        if ("GET".equals(requestMethod)) {
-            getHandler.handle(exchange);
-            return;
+        switch (exchange.getRequestMethod()) {
+            case "GET" -> getHandler.handle(exchange);
+            case "POST" -> postHandler.handle(exchange);
+            default -> serveNotFound(exchange);
         }
-
-        if ("POST".equals(requestMethod)) {
-            postHandler.handle(exchange);
-            return;
-        }
-
-        serveNotFound(exchange);
     }
 
     private record Response(int code, Map<String, String> headers, byte[] body) {

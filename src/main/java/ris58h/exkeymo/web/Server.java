@@ -42,9 +42,9 @@ public class Server {
     private void handleRoot(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         switch (path) {
-            case "/" -> handleGet(exchange, e -> serveRedirect(exchange, "/simple"));
-            case "/simple" -> handleGetPost(exchange, e -> servePublicResource(e, "/simple.html"), this::serveApkWithSimpleLayouts);
-            case "/complex" -> handleGetPost(exchange, e -> servePublicResource(e, "/complex.html"), this::serveApkWithComplexLayouts);
+            case "/" -> handleGet(exchange, e -> serveRedirect(e, "/simple.html"));
+            case "/simple" -> handleGetPost(exchange, e -> serveRedirect(e, "/simple.html"), this::serveApkWithSimpleLayouts);
+            case "/complex" -> handleGetPost(exchange, e -> serveRedirect(e, "/complex.html"), this::serveApkWithComplexLayouts);
             case "/docs" -> handleGet(exchange, e -> servePublicResource(exchange, "/docs.html"));
             default -> handleGet(exchange, e -> servePublicResource(e, path));
         }

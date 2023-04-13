@@ -42,15 +42,15 @@ public class Server {
     private void handleRoot(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         switch (path) {
-            case "/" -> doRedirect(exchange, "/simple");
-            case "/simple" -> handleGetPost(exchange, this::doGetSimple, this::doPostSimple);
-            case "/complex" -> handleGetPost(exchange, this::doGetComplex, this::doPostComplex);
-            case "/docs" -> doGetPublic(exchange, "/docs.html");
+            case "/" -> serveRedirect(exchange, "/simple");
+            case "/simple" -> handleGetPost(exchange, e -> servePublicResource(e, "/simple.html"), this::doPostSimple);
+            case "/complex" -> handleGetPost(exchange, e -> servePublicResource(e, "/complex.html"), this::doPostComplex);
+            case "/docs" -> servePublicResource(exchange, "/docs.html");
             default -> {
                 if (Resources.exists(PUBLIC_RESOURCES_PATH + path)) {
-                    doGetPublic(exchange, path);
+                    servePublicResource(exchange, path);
                 } else {
-                    doNotFound(exchange);
+                    serveNotFound(exchange);
                 }
             }
         }
@@ -69,30 +69,34 @@ public class Server {
             return;
         }
 
-        doNotFound(exchange);
+        serveNotFound(exchange);
     }
 
-    private static void doRedirect(HttpExchange exchange, String path) throws IOException {
+    private static void serveRedirect(HttpExchange exchange, String path) throws IOException {
         exchange.getResponseHeaders().set("Location", path);
         exchange.sendResponseHeaders(302, -1);
     }
 
-    private static void doNotFound(HttpExchange exchange) throws IOException {
+    private static void serveNotFound(HttpExchange exchange) throws IOException {
         exchange.sendResponseHeaders(404, -1);
     }
 
-    private static void doGetPublic(HttpExchange exchange, String path) throws IOException {
-        if (path.endsWith(".html")) {
-            doGet(exchange, path, "text/html");
-        } else if (path.endsWith(".css")) {
-            doGet(exchange, path, "text/css");
-        } else {
-            doGet(exchange, path, "text/plain");
+    private static void serveError(HttpExchange exchange, String body) throws IOException {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        exchange.sendResponseHeaders(500, bytes.length);
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(bytes);
         }
     }
 
-    private void doGetSimple(HttpExchange exchange) throws IOException {
-        doGetPublic(exchange, "/simple.html");
+    private static void servePublicResource(HttpExchange exchange, String path) throws IOException {
+        if (path.endsWith(".html")) {
+            servePublicResource(exchange, path, "text/html");
+        } else if (path.endsWith(".css")) {
+            servePublicResource(exchange, path, "text/css");
+        } else {
+            servePublicResource(exchange, path, "text/plain");
+        }
     }
 
     private void doPostSimple(HttpExchange exchange) throws IOException {
@@ -130,10 +134,6 @@ public class Server {
         });
     }
 
-    private void doGetComplex(HttpExchange exchange) throws IOException {
-        doGetPublic(exchange, "/complex.html");
-    }
-
     private void doPostComplex(HttpExchange exchange) throws IOException {
         doPost(exchange, params -> {
             String layout = params.get("layout");
@@ -148,19 +148,19 @@ public class Server {
         });
     }
 
-    private static void doGet(HttpExchange exchange, String path, String contentType) throws IOException {
+    private static void servePublicResource(HttpExchange exchange, String path, String contentType) throws IOException {
         byte[] htmlBytes = Resources.readAllBytesSafe(PUBLIC_RESOURCES_PATH + path);
 
         if (htmlBytes == null) {
-            doNotFound(exchange);
+            serveNotFound(exchange);
             return;
         }
 
         exchange.getResponseHeaders().set("Content-Type", contentType);
         exchange.sendResponseHeaders(200, htmlBytes.length);
-        OutputStream os = exchange.getResponseBody();
-        os.write(htmlBytes);
-        os.close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(htmlBytes);
+        }
     }
 
     private void doPost(HttpExchange exchange, Function<Map<String, String>, List<String>> paramsToLayouts) throws IOException {
@@ -181,20 +181,16 @@ public class Server {
             bytes = apkBuilder.buildApp(layout, layout2);
         } catch (Exception e) {
             log.error("Error while building app", e);
-            bytes = e.getMessage().getBytes(StandardCharsets.UTF_8);
-            exchange.sendResponseHeaders(500, bytes.length);
-            OutputStream os = exchange.getResponseBody();
-            os.write(bytes);
-            os.close();
+            serveError(exchange, e.getMessage());
             return;
         }
 
         exchange.getResponseHeaders().set("Content-Type", "application/vnd.android.package-archive");
         exchange.getResponseHeaders().set("Content-Disposition", "attachment; filename=\"ExKeyMo Keyboard Layout.apk\"");
         exchange.sendResponseHeaders(200, bytes.length);
-        OutputStream os = exchange.getResponseBody();
-        os.write(bytes);
-        os.close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(bytes);
+        }
     }
 
     private static Map<String, String> parseParams(String request) {

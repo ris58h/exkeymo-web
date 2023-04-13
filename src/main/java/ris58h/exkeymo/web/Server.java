@@ -73,10 +73,6 @@ public class Server {
     }
 
     private record Response(int code, Map<String, String> headers, byte[] body) {
-        public Response(int code) {
-            this(code, null, null);
-        }
-
         public Response(int code, Map<String, String> headers) {
             this(code, headers, null);
         }
@@ -110,11 +106,11 @@ public class Server {
     }
 
     private static void serveBadRequest(HttpExchange exchange) throws IOException {
-        serveResponse(exchange, new Response(400));
+        serveResponse(exchange, new Response(400, "Bad request"));
     }
 
     private static void serveNotFound(HttpExchange exchange) throws IOException {
-        serveResponse(exchange, new Response(404));
+        serveResponse(exchange, new Response(404, "Not found"));
     }
 
     private static void serveError(HttpExchange exchange, String body) throws IOException {

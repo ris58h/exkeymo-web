@@ -103,16 +103,7 @@ public class Layouts {
         }
     }
 
-    private static class MapKey {
-        public final boolean usage;
-        public final String code;
-        public final String keyCode;
-
-        private MapKey(boolean usage, String code, String keyCode) {
-            this.usage = usage;
-            this.code = code;
-            this.keyCode = keyCode;
-        }
+    private record MapKey(boolean usage, String code, String keyCode) {
     }
 
     private static String readLayout(String name) {

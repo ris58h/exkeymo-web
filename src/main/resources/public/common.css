@@ -42,3 +42,19 @@ code, kbd, pre {
     top: 20px;
     right: 20px;
 }
+
+.github-link img {
+    width: 32px;
+    height: 32px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body, input, select, button, textarea {
+        color: #fff;
+        background: #000;
+    }
+
+    code, kbd, pre {
+        background-color: #444;
+    }
+}

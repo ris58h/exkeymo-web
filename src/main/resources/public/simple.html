@@ -13,6 +13,15 @@
 
         table {
             width: 100%;
+
+            /* <table cellspacing="0"/> */
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        /* <table cellpadding="0"/> */
+        th, td {
+            padding: 0;
         }
 
         th {
@@ -55,7 +64,7 @@
     </p>
 
     <form action="/simple" method="post">
-        <table border="0" cellpadding="0" cellspacing="0">
+        <table>
             <thead>
                 <tr>
                     <th>From key</th>

@@ -1,5 +1,6 @@
 package ris58h.exkeymo.web;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -78,9 +79,8 @@ public class Server {
 
     private static void serveResponse(HttpExchange exchange, Response response) throws IOException {
         if (response.headers != null) {
-            response.headers.forEach((key, value) -> {
-                exchange.getResponseHeaders().set(key, value);
-            });
+            Headers responseHeaders = exchange.getResponseHeaders();
+            response.headers.forEach(responseHeaders::set);
         }
         if (response.body == null) {
             exchange.sendResponseHeaders(response.code, -1);

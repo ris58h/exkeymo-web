@@ -116,6 +116,8 @@ public class Server {
             servePublicResource(exchange, path, "text/html");
         } else if (path.endsWith(".css")) {
             servePublicResource(exchange, path, "text/css");
+        } else if (path.endsWith(".png")) {
+            servePublicResource(exchange, path, "image/png");
         } else {
             servePublicResource(exchange, path, "text/plain");
         }

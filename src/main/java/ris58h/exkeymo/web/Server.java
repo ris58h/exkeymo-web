@@ -12,6 +12,11 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +31,9 @@ public class Server {
     private final int threads;
     private final ApkBuilder apkBuilder;
 
+    private Instant lastModified;
+    private String lastModifiedString;
+
     public Server(int port, int threads, ApkBuilder appBuilder) {
         this.port = port;
         this.threads = threads;
@@ -33,6 +41,10 @@ public class Server {
     }
 
     public void init() throws Exception {
+        this.lastModified = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(this.lastModified, ZoneId.systemDefault());
+        this.lastModifiedString = DateTimeFormatter.RFC_1123_DATE_TIME.format(zdt);
+
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(Executors.newFixedThreadPool(threads));
         server.createContext("/", this::handleRoot);
@@ -68,6 +80,10 @@ public class Server {
     }
 
     private record Response(int code, Map<String, String> headers, byte[] body) {
+        public Response(int code) {
+            this(code, null, null);
+        }
+
         public Response(int code, Map<String, String> headers) {
             this(code, headers, null);
         }
@@ -99,6 +115,10 @@ public class Server {
         ));
     }
 
+    private static void serveNotModified(HttpExchange exchange) throws IOException {
+        serveResponse(exchange, new Response(304));
+    }
+
     private static void serveBadRequest(HttpExchange exchange) throws IOException {
         serveResponse(exchange, new Response(400, "Bad request"));
     }
@@ -111,7 +131,7 @@ public class Server {
         serveResponse(exchange, new Response(500, body));
     }
 
-    private static void servePublicResource(HttpExchange exchange, String path) throws IOException {
+    private void servePublicResource(HttpExchange exchange, String path) throws IOException {
         if (path.endsWith(".html")) {
             servePublicResource(exchange, path, "text/html");
         } else if (path.endsWith(".css")) {
@@ -123,7 +143,15 @@ public class Server {
         }
     }
 
-    private static void servePublicResource(HttpExchange exchange, String path, String contentType) throws IOException {
+    private void servePublicResource(HttpExchange exchange, String path, String contentType) throws IOException {
+        List<String> ifModifiedSince = exchange.getRequestHeaders().get("If-Modified-Since");
+        if (ifModifiedSince != null && !ifModifiedSince.isEmpty()) {
+            ZonedDateTime zdt = ZonedDateTime.parse(ifModifiedSince.get(0), DateTimeFormatter.RFC_1123_DATE_TIME);
+            if (this.lastModified.compareTo(zdt.toInstant().truncatedTo(ChronoUnit.SECONDS)) <= 0) {
+                serveNotModified(exchange);
+                return;
+            }
+        }
         byte[] htmlBytes = Resources.readAllBytesSafe(PUBLIC_RESOURCES_PATH + path);
         if (htmlBytes == null) {
             serveNotFound(exchange);
@@ -131,7 +159,10 @@ public class Server {
         }
         serveResponse(exchange, new Response(
                 200,
-                Map.of("Content-Type", contentType),
+                Map.of(
+                        "Content-Type", contentType,
+                        "Last-Modified", this.lastModifiedString
+                ),
                 htmlBytes
         ));
     }

@@ -4,10 +4,7 @@ import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        ApkBuilder appBuilder = new ApkBuilder(
-                stringProperty("keystore.password")
-                        .orElseThrow(() -> new RuntimeException("Property 'keystore.password' is not specified"))
-        );
+        ApkBuilder appBuilder = new ApkBuilder();
         appBuilder.init();
 
         Server server = new Server(

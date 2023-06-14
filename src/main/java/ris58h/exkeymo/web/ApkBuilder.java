@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -19,28 +18,21 @@ public class ApkBuilder {
 
     private static final String KEYBOARD_LAYOUT_FILE_NAME = "res/Q2.kcm";
     private static final String KEYBOARD_LAYOUT2_FILE_NAME = "res/_f.kcm";
-
-    private final char[] keystorePassword;
+    private static final char[] KEYSTORE_PASSWORD = "exkeymo".toCharArray();
 
     private byte[] inAppBytes;
     private byte[] inApp2Bytes;
     private X509Certificate certificate;
     private PrivateKey privateKey;
 
-    public ApkBuilder(String keystorePassword) {
-        this.keystorePassword = keystorePassword.toCharArray();
-    }
-
     public void init() throws Exception {
         this.inAppBytes = Resources.readAllBytesUnsafe("/app-oneLayout-release-unsigned.apk");
         this.inApp2Bytes = Resources.readAllBytesUnsafe("/app-twoLayouts-release-unsigned.apk");
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
-        keyStore.load(Resources.getAsStream("/exkeymo.keystore"), keystorePassword);
+        keyStore.load(Resources.getAsStream("/exkeymo.keystore"), KEYSTORE_PASSWORD);
         this.certificate = (X509Certificate) keyStore.getCertificate("app");
-        this.privateKey = (PrivateKey) keyStore.getKey("app", keystorePassword);
-
-        Arrays.fill(keystorePassword, (char) 0);
+        this.privateKey = (PrivateKey) keyStore.getKey("app", KEYSTORE_PASSWORD);
     }
 
     public byte[] buildApp(String layout, String layout2) throws Exception {

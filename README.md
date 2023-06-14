@@ -6,7 +6,7 @@ Need more than two layouts? https://github.com/ris58h/custom-keyboard-layout
 ## Run locally
 
 ### Requirements
-- Java.
+- Java (17 or higher).
 
 ### Get
 Clone via [Git](https://git-scm.com/):

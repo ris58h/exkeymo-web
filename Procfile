@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -cp target/classes:target/dependency/* ris58h.exkeymo.web.Main
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/exkeymo-web-*-jar-with-dependencies.jar

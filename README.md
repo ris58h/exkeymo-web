@@ -22,7 +22,7 @@ Or download [zip](https://github.com/ris58h/exkeymo-web/archive/refs/heads/maste
 
 ### Run
 ```
-java -Dkeystore.password=exkeymo -cp 'target/classes:target/dependency/*' ris58h.exkeymo.web.Main
+java -Dkeystore.password=exkeymo -jar target/exkeymo-web-*-jar-with-dependencies.jar
 ```
 
 ### Use

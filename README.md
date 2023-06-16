@@ -26,4 +26,4 @@ java -jar target/exkeymo-web-*-jar-with-dependencies.jar
 ```
 
 ### Use
-Visit [http://localhost/](http://localhost/).
+Visit [http://localhost/](http://localhost/). Documentation page [http://localhost/docs.html](http://localhost/docs.html).

@@ -24,6 +24,10 @@ Or download [zip](https://github.com/ris58h/exkeymo-web/archive/refs/heads/maste
 ```
 java -jar target/exkeymo-web-*-jar-with-dependencies.jar
 ```
+To run on a specific port use `server.port` system property:
+```
+java -Dserver.port=PORT_NUMBER -jar target/exkeymo-web-*-jar-with-dependencies.jar
+```
 
 ### Use
 Visit [http://localhost/](http://localhost/). Documentation page [http://localhost/docs.html](http://localhost/docs.html).

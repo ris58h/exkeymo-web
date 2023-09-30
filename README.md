@@ -4,8 +4,10 @@ Android external keyboard remapping without root https://exkeymo.herokuapp.com/ 
 Need more than two layouts? https://github.com/ris58h/custom-keyboard-layout
 
 ## Prebuilt APKs
-- CapsLock to Ctrl and vice versa [ExKeyMo-caps2ctrl.zip](https://github.com/ris58h/exkeymo-web/files/12675101/ExKeyMo-caps2ctrl.zip)
-- CapsLock to Esc and vice versa [ExKeyMo-caps2esc.zip](https://github.com/ris58h/exkeymo-web/files/12724557/ExKeyMo-caps2esc.zip)
+- CapsLock to Ctrl [ExKeyMo-caps2ctrl.zip](https://github.com/ris58h/exkeymo-web/files/12775514/ExKeyMo-caps2ctrl.zip)
+- CapsLock to Ctrl and vice versa [ExKeyMo-swap-caps-and-ctrl.zip](https://github.com/ris58h/exkeymo-web/files/12775516/ExKeyMo-swap-caps-and-ctrl.zip)
+- CapsLock to Esc [ExKeyMo-caps2esc.zip](https://github.com/ris58h/exkeymo-web/files/12775515/ExKeyMo-caps2esc.zip)
+- CapsLock to Esc and vice versa [ExKeyMo-swap-caps-and-esc.zip](https://github.com/ris58h/exkeymo-web/files/12775517/ExKeyMo-swap-caps-and-esc.zip)
 
 ## Run locally
 

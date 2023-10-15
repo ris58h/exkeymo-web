@@ -58,7 +58,7 @@ public class Server {
             case "/" -> handleGet(exchange, e -> serveRedirect(e, "/simple.html"));
             case "/simple" -> handleGetPost(exchange, e -> serveRedirect(e, "/simple.html"), this::serveApkWithSimpleLayouts);
             case "/complex" -> handleGetPost(exchange, e -> serveRedirect(e, "/complex.html"), this::serveApkWithComplexLayouts);
-            case "/docs" -> handleGet(exchange, e -> servePublicResource(exchange, "/docs.html"));
+            case "/docs" -> handleGet(exchange, e -> servePublicResource(e, "/docs.html"));
             default -> handleGet(exchange, e -> servePublicResource(e, path));
         }
     }

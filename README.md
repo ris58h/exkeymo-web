@@ -15,11 +15,11 @@ Need more than two layouts? https://github.com/ris58h/custom-keyboard-layout
 - Java (17 or higher).
 
 ### Get
-Clone via [Git](https://git-scm.com/):
+Clone the source code via Git:
 ```
 git clone git@github.com:ris58h/exkeymo-web.git
 ```
-Or download [zip](https://github.com/ris58h/exkeymo-web/archive/refs/heads/master.zip).
+Or download it as [zip](https://github.com/ris58h/exkeymo-web/archive/refs/heads/master.zip).
 
 ### Build
 ```

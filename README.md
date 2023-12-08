@@ -36,4 +36,4 @@ java -Dserver.port=PORT_NUMBER -jar target/exkeymo-web-*-jar-with-dependencies.j
 ```
 
 ### Use
-Visit [http://localhost/](http://localhost/). Documentation page [http://localhost/docs.html](http://localhost/docs.html).
+Visit [http://localhost/](http://localhost/) and don't forget to __RTFM__ ([http://localhost/docs.html](http://localhost/docs.html)).

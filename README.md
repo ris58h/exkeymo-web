@@ -19,7 +19,7 @@ Clone the source code via Git:
 ```
 git clone git@github.com:ris58h/exkeymo-web.git
 ```
-Or download it as [zip](https://github.com/ris58h/exkeymo-web/archive/refs/heads/master.zip).
+Or [download](https://github.com/ris58h/exkeymo-web/archive/refs/heads/master.zip) it as zip.
 
 ### Build
 ```

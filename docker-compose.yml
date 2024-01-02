@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  ngrok:
+    depends_on: [app]
+    env_file: .env
+    image: ngrok/ngrok:alpine
+    command: http app:6789
+    ports:
+      - 127.0.0.1:4040:4040
+
+  app:
+    image: maven:3.9-amazoncorretto-17
+    command: sh -c "
+      set -x;
+      cd /app;
+      mvn clean install;
+      java -Dserver.port=6789 -jar target/exkeymo-web-*-jar-with-dependencies.jar
+      "
+    volumes:
+      - .:/app
+    ports:
+      - 127.0.0.1:6789:6789
+

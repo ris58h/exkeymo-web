@@ -35,5 +35,26 @@ To run on a specific port use `server.port` system property:
 java -Dserver.port=PORT_NUMBER -jar target/exkeymo-web-*-jar-with-dependencies.jar
 ```
 
+### Docker
+If you do not have Java installed, you can run the app with Docker Compose. 
+Use the `docker-compose` or `docker compose` command, depending on which one is installed:
+
+```bash
+docker compose up app
+
+```
+
+Next, browse to [http://localhost:6789](http://localhost:6789/) to access the application.
+
+If you want to get a public URL, obtain ngrok credentials, edit the `.env` file
+(`NGROK_AUTHTOKEN=…`), and run ngrok using the following command:
+
+```bash
+docker compose run --rm --interactive --service-ports ngrok
+
+```
+
+Ngrok will print the public tunnel, so you can simply browse to it!
+
 ### Use
 Visit [http://localhost/](http://localhost/) and don't forget to __RTFM__ ([http://localhost/docs.html](http://localhost/docs.html)).

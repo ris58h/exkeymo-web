@@ -37,3 +37,26 @@ java -Dserver.port=PORT_NUMBER -jar target/exkeymo-web-*-jar-with-dependencies.j
 
 ### Use
 Visit [http://localhost/](http://localhost/) and don't forget to __RTFM__ ([http://localhost/docs.html](http://localhost/docs.html)).
+
+### Run with Docker
+You can run the application using Docker. There are two ways to do this: using Docker Compose or just Docker.
+
+#### Using Docker
+Build the Docker image:
+```bash
+docker build -t exkeymo-web .
+```
+
+Run the Docker container:
+```bash
+docker run -p 80:80 exkeymo-web
+```
+This will start the container and expose the application on port 80.
+
+#### Using Docker Compose
+
+Make sure you have Docker and Docker Compose installed. Then, run the following command in the directory containing the `docker-compose.yml` file:
+```bash
+docker-compose up
+```
+This will build the Docker image and start the container, exposing the application on port 80.

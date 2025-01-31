@@ -20,7 +20,9 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.DEROutputStream;
+import org.bouncycastle.asn1.ASN1OutputStream;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -162,7 +164,9 @@ public class SignedJar {
     private CMSSignedDataGenerator createSignedDataGenerator() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
 
-        Store certStore = new JcaCertStore(mChain);
+        // Explicitly cast to Store<X509CertificateHolder> to ensure type safety
+        @SuppressWarnings("unchecked")
+        Store<X509CertificateHolder> certStore = (Store<X509CertificateHolder>) new JcaCertStore(mChain);
         ContentSigner signer = new JcaContentSignerBuilder(SIG_ALG)
                 .setProvider("BC").build(mSignKey);
         CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
@@ -186,7 +190,7 @@ public class SignedJar {
 
         // Android doesn't support indefinite length encoding
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DEROutputStream dOut = new DEROutputStream(baos);
+        ASN1OutputStream dOut = ASN1OutputStream.create(baos, ASN1Encoding.DER);
         ASN1InputStream aIn = new ASN1InputStream(signedData.getEncoded());
         dOut.writeObject(aIn.readObject());
         aIn.close();

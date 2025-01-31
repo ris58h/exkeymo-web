@@ -1,7 +1,13 @@
 # ExKeyMo
-Android external keyboard remapping without root https://exkeymo.herokuapp.com/ (**NOT AVAILABLE ANYMORE** - you'll have to run ExKeyMo locally to create an APK with your custom layout or use a prebuilt APK).
+Since Android 4.1 an app can provide additional keyboard layouts via [Key Character Map](https://source.android.com/docs/core/input/key-character-map-files) files.
+Since then, it's possible to customize a keyboard layout without root access by installing an app that contains requred layout.
+ExKeyMo helps you to build such app even if you don't know anything about Android development.
 
-Need more than two layouts? https://github.com/ris58h/custom-keyboard-layout
+ExKeyMo was hosted by [Heroku](https://exkeymo.herokuapp.com/) but it's not available anymore because Heroku stopped to host projects for free and not approved this project for Heroku Open Source Software Credit Program. You have to run ExKeyMo locally to create an APK with your custom layout or use a prebuilt APK listed below.
+
+Need more than two layouts? You can build such APK based on [Custom Keyboard Layout](https://github.com/ris58h/custom-keyboard-layout) project.
+
+Want to support? [Buy me a coffee](https://www.buymeacoffee.com/ris58h).
 
 ## Prebuilt APKs
 - CapsLock to Ctrl [ExKeyMo-caps2ctrl.zip](https://github.com/ris58h/exkeymo-web/files/12775514/ExKeyMo-caps2ctrl.zip)
